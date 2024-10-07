@@ -76,14 +76,14 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
 
     return (
         <motion.div
-            className="absolute p-4 bottom-0 left-0 w-full"
+            className="absolute bottom-0 left-0 w-full"
             initial={{ y: 0 }}
             // animate={{ y: isExpanded ? -100 : 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
         >
             <motion.div
                 ref={cardRef}
-                className="backdrop-blur-md bg-white/40 rounded-lg p-6 w-full shadow-lg border border-white/50"
+                className="backdrop-blur-md text-black p-4 w-full bg-white/40 border-t-2 border-white/10"
                 whileHover={{ scale: 1.02 }}
                 onClick={handleCardClick}
             >
