@@ -69,6 +69,11 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
         setIsExpanded(!isExpanded);
     };
 
+    const handleSupportButton: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+        e.stopPropagation();
+
+    }
+
     return (
         <motion.div
             className="absolute p-4 bottom-0 left-0 w-full"
@@ -141,6 +146,14 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                         </motion.div>
                     )}
                 </AnimatePresence>
+
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={handleSupportButton}
+                    className='bg-blue-600 text-white/80 py-2 w-full mt-2 rounded-md'>
+                    Send a Cofffee
+                </motion.button>
             </motion.div>
         </motion.div>
     );
