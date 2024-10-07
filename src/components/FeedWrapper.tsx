@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react'
-import { VideoPlayer } from './FeedVideo';
 import { data } from '~/fake/funding';
 import ProposalCard from './FeedProposalCard';
+import { FeedVideo } from './FeedVideo';
 
 const FeedWrapper = () => {
 
@@ -45,7 +45,7 @@ const FeedWrapper = () => {
                         id={`video-${index}`}
                         className="h-screen w-full snap-start relative"
                     >
-                        <VideoPlayer src={video} inView={inViewVideos[index] || false} />
+                        <FeedVideo src={video} inView={inViewVideos[index] ?? false} />
 
                         {/* Panel */}
                         {proposal && <ProposalCard proposal={proposal} />}

@@ -3,67 +3,79 @@ import { Pause, Play, VolumeX, Volume2 } from "lucide-react";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useMutedStore } from "~/store/muteStore";
 
-interface VideoPlayerProps {
+interface FeedVideoProps {
     src: string;
     inView: boolean;
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, inView }) => {
+export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const { isMuted, toggleMute } = useMutedStore();
     const [isHolding, setIsHolding] = useState<boolean>(false);
     const holdTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    useEffect(() => {
+    const playVideo = useCallback(async () => {
         if (videoRef.current) {
-            if (inView && !isHolding) {
-                videoRef.current.play();
+            try {
+                await videoRef.current.play();
                 setIsPlaying(true);
-            } else {
-                videoRef.current.pause();
-                setIsPlaying(false);
+            } catch (error) {
+                console.error("Error playing video:", error);
             }
         }
-    }, [inView, isHolding]);
+    }, []);
+
+    const pauseVideo = useCallback(async () => {
+        if (videoRef.current) {
+            try {
+                void videoRef.current.pause();
+                setIsPlaying(false);
+            } catch (error) {
+                console.error("Error pausing video:", error);
+            }
+        }
+    }, []);
 
     useEffect(() => {
-        const handleVisibilityChange = () => {
-            if (document.hidden) {
-                videoRef.current?.pause();
-                setIsPlaying(false);
-            } else if (inView && videoRef.current && !isHolding) {
-                videoRef.current.play();
-                setIsPlaying(true);
-            }
-        };
+        if (inView && !isHolding) {
+            void playVideo();
+        } else {
+            void pauseVideo();
+        }
+    }, [inView, isHolding, playVideo, pauseVideo]);
+
+    const handleVisibilityChange = () => {
+        if (document.hidden) {
+            void pauseVideo();
+        } else if (inView && !isHolding) {
+            void playVideo();
+        }
+    };
+
+    useEffect(() => {
+
 
         document.addEventListener('visibilitychange', handleVisibilityChange);
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, [inView, isHolding]);
+    }, [inView, isHolding, playVideo, pauseVideo]);
 
-    const togglePlay = useCallback(() => {
-        if (videoRef.current) {
-            if (isPlaying) {
-                videoRef.current.pause();
-            } else {
-                videoRef.current.play();
-            }
-            setIsPlaying(!isPlaying);
+    const togglePlay = useCallback(async () => {
+        if (isPlaying) {
+            await pauseVideo();
+        } else {
+            await playVideo();
         }
-    }, [isPlaying]);
+    }, [isPlaying, pauseVideo, playVideo]);
 
     const handleTouchStart = useCallback(() => {
         holdTimeoutRef.current = setTimeout(() => {
             setIsHolding(true);
-            if (videoRef.current) {
-                videoRef.current.pause();
-                setIsPlaying(false);
-            }
+            void pauseVideo();
         }, 200); // 200ms delay to differentiate between tap and hold
-    }, []);
+    }, [pauseVideo]);
 
     const handleTouchEnd = useCallback(() => {
         if (holdTimeoutRef.current) {
@@ -71,14 +83,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, inView }) => {
         }
         if (isHolding) {
             setIsHolding(false);
-            if (videoRef.current && inView) {
-                videoRef.current.play();
-                setIsPlaying(true);
+            if (inView) {
+                void playVideo();
             }
         } else {
             toggleMute();
         }
-    }, [isHolding, inView, toggleMute]);
+    }, [isHolding, inView, playVideo, toggleMute]);
 
     return (
         <div className="relative w-full h-full">
@@ -93,7 +104,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, inView }) => {
                 onTouchEnd={handleTouchEnd}
             />
             <div className="absolute top-4 right-4 flex flex-col space-y-2">
-                <button onClick={togglePlay} className="p-2 bg-black bg-opacity-50 rounded-full text-white aspect-square">
+                <button onClick={() => void togglePlay()} className="p-2 bg-black bg-opacity-50 rounded-full text-white aspect-square">
                     {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                 </button>
                 <button onClick={toggleMute} className="p-2 bg-black bg-opacity-50 rounded-full text-white aspect-square">
