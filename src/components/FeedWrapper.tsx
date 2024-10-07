@@ -34,7 +34,7 @@ const FeedWrapper = () => {
     }, []);
 
     return (
-        <div className="h-screen w-full overflow-y-scroll snap-y snap-mandatory">
+        <div className="h-[100dvh] w-full overflow-y-scroll snap-y snap-mandatory">
             {data.videos.map((video, index) => {
 
                 const proposal = data.proposals[index]
@@ -43,7 +43,7 @@ const FeedWrapper = () => {
                     <div
                         key={index}
                         id={`video-${index}`}
-                        className="h-screen w-full snap-start relative"
+                        className="h-[100dvh] w-full snap-start relative"
                     >
                         <FeedVideo src={video} inView={inViewVideos[index] ?? false} />
 

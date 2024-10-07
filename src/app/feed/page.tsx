@@ -7,7 +7,7 @@ const FeedPage: React.FC = () => {
 
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center bg-slate-900">
+        <main className="flex min-h-[100dvh] flex-col items-center justify-center bg-slate-900">
             <FeedWrapper />
         </main>
     );
