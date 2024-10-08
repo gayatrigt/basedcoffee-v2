@@ -3,8 +3,8 @@ import { motion, useAnimation } from "framer-motion";
 import React, { useEffect, useRef } from "react";
 
 import { FundButton, getOnrampBuyUrl } from '@coinbase/onchainkit/fund';
-import { Avatar, Identity, Name } from "@coinbase/onchainkit/identity";
-import { WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet";
+import { Avatar, EthBalance, Identity, Name } from "@coinbase/onchainkit/identity";
+import { WalletDropdownBasename, WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet";
 import { PiSpinnerGap } from "react-icons/pi";
 import { RxAvatar } from "react-icons/rx";
 import { useOnClickOutside } from 'usehooks-ts';
@@ -37,26 +37,42 @@ const SideBarList: React.FC = ({ }) => {
     return (
         <div className="bg-white rounded-lg h-full p-4 py-6 flex flex-col">
             <div className="flex-1">
-                <h1 className=" text-blue-700 font-accent uppercase text-2xl mb-2">Based<br />Backers</h1>
+                <h1 className=" text-blue-600 font-accent uppercase text-2xl mb-2">Based<br />Backers</h1>
 
                 {
-                    address && <Identity
-                        address={address}
-                        schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
-                        className="border-blue-700 text-blue-700 p-2 rounded-lg mt-4 bg-white"
-                    >
-                        <Avatar
+                    address && <>
+                        <Identity
                             address={address}
-                            defaultComponent={<RxAvatar className='h-6 w-6' />}
-                            loadingComponent={<PiSpinnerGap className='h-6 w-6 animate-spin' />}
-                            className="h-6 w-6 "
-                        />
-                        <Name className='text-blue-700' />
-                        <FundButton fundingUrl={onrampBuyUrl} />
-                    </Identity>
+                            schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+                            className="border-blue-600 text-blue-600 p-2 rounded-lg mt-4 bg-white"
+                        >
+                            <Avatar
+                                address={address}
+                                defaultComponent={<RxAvatar className='h-6 w-6' />}
+                                loadingComponent={<PiSpinnerGap className='h-6 w-6 animate-spin' />}
+                                className="h-6 w-6 "
+                            />
+                            <Name className='text-blue-600' />
+                        </Identity>
+
+                        <div className="relative mt-2">
+                            <span className="mb-1 text-xs text-slate-400">Balance</span>
+                            <Identity
+                                address={address}
+                                schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+                                className="text-slate-600 font-bold bg-slate-200 rounded-md py-2"
+                            >
+                                <EthBalance className="text-2xl" />
+                            </Identity>
+                            <FundButton hideText className="rounded-lg hover:bg-blue-600 focus:bg-blue-600 bg-slate-400 justify-start absolute right-0 top-0 translate-y-1/2 rounded-l-none" fundingUrl={onrampBuyUrl} />
+                        </div>
+                    </>
                 }
             </div>
-            <WalletDropdownDisconnect className="bg-blue-100 rounded-lg font-semibold items-center" />
+
+            <div className="grid gap-2">
+                <WalletDropdownDisconnect className="bg-blue-100 rounded-lg font-semibold items-center" />
+            </div>
 
             {/* <WalletDropdown>
                 <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick={true}>
@@ -157,7 +173,7 @@ export const SideMenu: React.FC<{
                         transition={{ type: "spring", damping: 60, stiffness: 180 }}
                     >
                         {/* {isOpen ? "Close" : "Open"} */}
-                        {address && <div className="bg-blue-700 p-1 rounded-full border-2 border-blue-700">
+                        {address && <div className="bg-blue-600 p-1 rounded-full border-2 border-blue-600">
                             <Avatar
                                 address={address}
                                 defaultComponent={<RxAvatar className='h-8 w-8' />}
