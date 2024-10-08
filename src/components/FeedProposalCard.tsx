@@ -21,14 +21,13 @@ interface Proposal {
     description: string;
     fullContent?: string;
     videoUrl?: string;
+    notionUrl?: string;
     goal: number;
     current: number;
     currency: string;
     deadline: string;
     creator: Creator;
     backers: number;
-    website: string;
-    links: Link[];
 }
 
 interface FeedProposalCardProps {

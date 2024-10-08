@@ -9,7 +9,7 @@ import {
 } from '@coinbase/onchainkit/transaction';
 import { useCallback } from 'react';
 import { base } from 'viem/chains';
-import fundingProject from "../abi/CrowdFundingProject.json"
+import fundingProject from "../abi/CrowdFundingProject.json";
 
 const SupportButton = () => {
 
@@ -20,6 +20,7 @@ const SupportButton = () => {
     return (
         <Transaction
             chainId={base.id}
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
             contracts={fundingProject as any}
             onStatus={handleOnStatus}
         >

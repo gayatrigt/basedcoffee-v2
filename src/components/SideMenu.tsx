@@ -107,7 +107,7 @@ export const SideMenu: React.FC<{
     useOnClickOutside(ref, close)
 
     useEffect(() => {
-        controls.start(isOpen ? "active" : "inactive");
+        void controls.start(isOpen ? "active" : "inactive");
     }, [isOpen, controls]);
 
     const sidekickBodyStyles = {
@@ -158,7 +158,7 @@ export const SideMenu: React.FC<{
                         } else if (Math.abs(info.point.x) < threshold && !isOpen) {
                             setOpen(true);
                         } else {
-                            controls.start(isOpen ? "active" : "inactive");
+                            void controls.start(isOpen ? "active" : "inactive");
                         }
                     }}
                     initial={{ x: -width }}
