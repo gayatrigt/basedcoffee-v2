@@ -9,14 +9,9 @@ interface Creator {
     wallet: string;
 }
 
-interface Social {
-    twitter?: string;
-    discord?: string;
-    telegram?: string;
-    instagram?: string;
-    youtube?: string;
-    linkedin?: string;
-    github?: string;
+interface Link {
+    label: string;
+    value: string
 }
 
 interface Proposal {
@@ -24,6 +19,8 @@ interface Proposal {
     title: string;
     category: string;
     description: string;
+    fullContent?: string;
+    videoUrl?: string;
     goal: number;
     current: number;
     currency: string;
@@ -31,7 +28,7 @@ interface Proposal {
     creator: Creator;
     backers: number;
     website: string;
-    social: Social;
+    links: Link[];
 }
 
 interface FeedProposalCardProps {
