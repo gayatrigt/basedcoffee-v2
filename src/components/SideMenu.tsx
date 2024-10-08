@@ -1,17 +1,81 @@
 'use client';
-import React, { useState, useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
+import React, { useEffect, useRef } from "react";
 
-import { useSidebarStore } from "~/store/sidebarStore";
-import { Avatar } from "@coinbase/onchainkit/identity";
+import { FundButton, getOnrampBuyUrl } from '@coinbase/onchainkit/fund';
+import { Avatar, Identity, Name } from "@coinbase/onchainkit/identity";
+import { WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet";
 import { PiSpinnerGap } from "react-icons/pi";
 import { RxAvatar } from "react-icons/rx";
+import { useOnClickOutside } from 'usehooks-ts';
 import { useAccount } from "wagmi";
-import { useOnClickOutside } from 'usehooks-ts'
+import { env } from "~/env";
+import { useSidebarStore } from "~/store/sidebarStore";
+import { useRouter } from "next/navigation";
 
-const SideBarList: React.FC = ({ }) => (
-    <div className="bg-white rounded-lg h-full p-4">This is content</div>
-);
+const SideBarList: React.FC = ({ }) => {
+    const { address, isDisconnected } = useAccount();
+    const router = useRouter()
+    const { close } = useSidebarStore()
+
+    const onrampBuyUrl = getOnrampBuyUrl({
+        projectId: env.NEXT_PUBLIC_WC_PROJECT_ID,
+        addresses: { address: ['base'] },
+        assets: ['USDC'],
+        presetFiatAmount: 20,
+        fiatCurrency: 'USD'
+    });
+
+    useEffect(() => {
+        console.log("🚀 ~ useEffect ~ isDisconnected:", isDisconnected)
+        if (isDisconnected) {
+            router.push('/')
+            close()
+        }
+    }, [isDisconnected, address])
+
+    return (
+        <div className="bg-white rounded-lg h-full p-4 py-6 flex flex-col">
+            <div className="flex-1">
+                <h1 className=" text-blue-700 font-accent uppercase text-2xl mb-2">Based<br />Backers</h1>
+
+                {
+                    address && <Identity
+                        address={address}
+                        schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+                        className="border-blue-700 text-blue-700 p-2 rounded-lg mt-4 bg-white"
+                    >
+                        <Avatar
+                            address={address}
+                            defaultComponent={<RxAvatar className='h-6 w-6' />}
+                            loadingComponent={<PiSpinnerGap className='h-6 w-6 animate-spin' />}
+                            className="h-6 w-6 "
+                        />
+                        <Name className='text-blue-700' />
+                        <FundButton fundingUrl={onrampBuyUrl} />
+                    </Identity>
+                }
+            </div>
+            <WalletDropdownDisconnect className="bg-blue-100 rounded-lg font-semibold items-center" />
+
+            {/* <WalletDropdown>
+                <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick={true}>
+                    <Avatar />
+                    <Name />
+                    <Address />
+                    <EthBalance />
+                </Identity>
+                <WalletDropdownBasename />
+                <WalletDropdownLink icon="wallet" href="https://wallet.coinbase.com">
+                    Go to Wallet Dashboard
+                </WalletDropdownLink>
+                <WalletDropdownFundLink />
+                <WalletDropdownDisconnect />
+            </WalletDropdown> */}
+
+        </div >
+    )
+};
 
 export const SideMenu: React.FC<{
     overlayColor?: string;
@@ -81,23 +145,26 @@ export const SideMenu: React.FC<{
                             controls.start(isOpen ? "active" : "inactive");
                         }
                     }}
+                    initial={{ x: -width }}
                     animate={controls}
                     variants={sidekickBodyStyles}
                     transition={{ type: "spring", damping: 60, stiffness: 180 }}
                 >
                     <motion.button
-                        className="border-none bg-transparent absolute top-4 right-0 outline-none bg-blue-700 p-1 rounded-full border-2 border-blue-700"
+                        className="border-none bg-transparent absolute top-4 right-0 outline-none"
                         onClick={toggle}
                         variants={menuHandlerStyles}
                         transition={{ type: "spring", damping: 60, stiffness: 180 }}
                     >
                         {/* {isOpen ? "Close" : "Open"} */}
-                        {address && <Avatar
-                            address={address}
-                            defaultComponent={<RxAvatar className='h-8 w-8' />}
-                            loadingComponent={<PiSpinnerGap className='h-8 w-8 animate-spin' />}
-                            className="h-8 w-8 text-white"
-                        />}
+                        {address && <div className="bg-blue-700 p-1 rounded-full border-2 border-blue-700">
+                            <Avatar
+                                address={address}
+                                defaultComponent={<RxAvatar className='h-8 w-8' />}
+                                loadingComponent={<PiSpinnerGap className='h-8 w-8 animate-spin' />}
+                                className="h-8 w-8 text-white"
+                            />
+                        </div>}
                     </motion.button>
                     <SideBarList />
                 </motion.div>
