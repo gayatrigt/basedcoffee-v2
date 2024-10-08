@@ -76,14 +76,14 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
 
     return (
         <motion.div
-            className="absolute bottom-0 left-0 w-full"
+            className="absolute bottom-0 left-0 w-full p-2"
             initial={{ y: 0 }}
             // animate={{ y: isExpanded ? -100 : 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
         >
             <motion.div
                 ref={cardRef}
-                className="backdrop-blur-md text-black p-4 w-full bg-white/40 border-t-2 border-white/10"
+                className=" text-white bg-slate-900/30 backdrop-blur-md border-2 border-slate-900/20 p-4 flex flex-col gap-2 pt-8 rounded-lg"
                 whileHover={{ scale: 1.02 }}
                 onClick={handleCardClick}
             >
@@ -92,7 +92,7 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                 <AnimatePresence>
                     {isExpanded && (
                         <motion.p
-                            className='text-sm text-slate-700 mb-2'
+                            className='text-sm text-slate-300 mb-2'
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
@@ -103,10 +103,10 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                 </AnimatePresence>
 
                 <div className='flex  justify-between items-center'>
-                    <span className="bg-blue-100/50 text-blue-800 text-xs font-medium mr-2 px-4 py-1 rounded mb-2 inline-block">
+                    <span className="bg-blue-100/50 text-blue-800 text-xs font-medium mr-2 px-4 py-1 rounded inline-block">
                         {proposal.category}
                     </span>
-                    <span className='text-sm text-slate-700 ml-2'>{proposal.backers} backers</span>
+                    <span className='text-sm text-slate-100 ml-2'>{proposal.backers} backers</span>
                 </div>
 
                 <motion.div
@@ -155,7 +155,7 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                     Send a Cofffee
                 </motion.button>
             </motion.div>
-        </motion.div>
+        </motion.div >
     );
 };
 
