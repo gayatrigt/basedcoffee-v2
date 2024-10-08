@@ -1,21 +1,13 @@
 'use client';
-import React from 'react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
+import WalletWrapper from './WalletWrapper';
 
-const LoginButton = () => {
+export default function LoginButton() {
     return (
-        <Link href={"/feed"}>
-            <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                // onClick={handleSupportButton}
-                className='bg-blue-600 text-white/80 py-2 w-full rounded-md font-medium'
-            >
-                Connect your wallet
-            </motion.button>
-        </Link>
-    )
+        <WalletWrapper
+            // className="min-w-[90px]"
+            text="Login"
+            className='border-2 py-2 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-[#030712] hover:border-slate-500 w-full '
+            withWalletAggregator={true}
+        />
+    );
 }
-
-export default LoginButton

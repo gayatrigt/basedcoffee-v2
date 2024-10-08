@@ -151,7 +151,8 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={handleSupportButton}
-                    className='bg-blue-600 text-white/80 py-2 w-full mt-2 rounded-md'>
+                    className='bg-blue-600 text-white/80 py-2 w-full mt-2 rounded-md'
+                >
                     Send a Cofffee
                 </motion.button>
             </motion.div>

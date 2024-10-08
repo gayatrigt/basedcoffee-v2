@@ -1,8 +1,12 @@
 import "~/styles/globals.css";
+import '@coinbase/onchainkit/styles.css';
+import '@rainbow-me/rainbowkit/styles.css';
 
 import { type Metadata } from "next";
 import { twMerge } from "tailwind-merge";
 import { accentFont, baseFont } from "~/font";
+import dynamic from "next/dynamic";
+import SideMenu from "~/components/SideMenu";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -11,13 +15,24 @@ export const metadata: Metadata = {
 };
 
 
+const Providers = dynamic(
+  () => import('src/components/WalletProvider'),
+  {
+    ssr: false,
+  },
+);
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={twMerge(baseFont.variable, accentFont.variable)}>
-      <body>{children}</body>
+      <body>
+        <Providers>
+          {children}
+          <SideMenu />
+        </Providers>
+      </body>
     </html>
   );
 }

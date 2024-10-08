@@ -1,6 +1,4 @@
-import Link from "next/link";
-import { motion } from "framer-motion";
-import LoginButton from "~/components/LoginButton";
+import HomepageCta from "~/components/HomepageCta";
 
 export default function HomePage() {
   return (
@@ -20,7 +18,7 @@ export default function HomePage() {
         >
           <h1 className=" font-accent uppercase text-2xl">Based<br />Backers</h1>
           <p className="mb-2 text-sm opacity-80">A place for builder, creators and innvators to grow and support</p>
-          <LoginButton />
+          <HomepageCta />
         </div>
       </div>
 
