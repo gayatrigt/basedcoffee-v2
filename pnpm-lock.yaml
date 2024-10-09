@@ -46,12 +46,18 @@ dependencies:
   react:
     specifier: ^18.3.1
     version: 18.3.1
+  react-currency-input-field:
+    specifier: ^3.8.0
+    version: 3.8.0(react@18.3.1)
   react-dom:
     specifier: ^18.3.1
     version: 18.3.1(react@18.3.1)
   react-icons:
     specifier: ^5.3.0
     version: 5.3.0(react@18.3.1)
+  react-number-format:
+    specifier: ^5.4.2
+    version: 5.4.2(react-dom@18.3.1)(react@18.3.1)
   tailwind-merge:
     specifier: ^2.5.3
     version: 2.5.3
@@ -8479,6 +8485,14 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
+  /react-currency-input-field@3.8.0(react@18.3.1):
+    resolution: {integrity: sha512-DKSIjacrvgUDOpuB16b+OVDvp5pbCt+s+RHJgpRZCHNhzg1yBpRUoy4fbnXpeOj0kdbwf5BaXCr2mAtxEujfhg==}
+    peerDependencies:
+      react: ^16.9.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.3.1
+    dev: false
+
   /react-devtools-core@5.3.1:
     resolution: {integrity: sha512-7FSb9meX0btdBQLwdFOwt6bGqvRPabmVMMslv8fgoSPqXyuGpgQe36kx8gR86XPw7aV1yVouTp6fyZ0EH+NfUw==}
     dependencies:
@@ -8591,6 +8605,16 @@ packages:
       - supports-color
       - typescript
       - utf-8-validate
+    dev: false
+
+  /react-number-format@5.4.2(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-cg//jVdS49PYDgmcYoBnMMHl4XNTMuV723ZnHD2aXYtWWWqbVF3hjQ8iB+UZEuXapLbeA8P8H+1o6ZB1lcw3vg==}
+    peerDependencies:
+      react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
     dev: false
 
   /react-refresh@0.14.2:
