@@ -29,7 +29,8 @@ const SideBarList: React.FC = ({ }) => {
     useEffect(() => {
         console.log("🚀 ~ useEffect ~ isDisconnected:", isDisconnected)
         if (isDisconnected) {
-            router.push('/')
+            // TODO: do better
+            // router.push('/')
             close()
         }
     }, [isDisconnected, address])

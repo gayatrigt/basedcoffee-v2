@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
+import SupportButton from './SupportButton';
 
 
 
@@ -143,14 +144,16 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                     )}
                 </AnimatePresence>
 
-                <motion.button
+                <SupportButton />
+
+                {/* <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={handleSupportButton}
                     className='bg-blue-600 text-white/80 py-2 w-full mt-2 rounded-md'
                 >
                     Send a Cofffee
-                </motion.button>
+                </motion.button> */}
             </motion.div>
         </motion.div >
     );
