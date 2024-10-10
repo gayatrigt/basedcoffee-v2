@@ -35,6 +35,11 @@ const SideBarList: React.FC = ({ }) => {
         }
     }, [isDisconnected, address])
 
+    const handleSupportButton = () => {
+        router.push('/create');
+        close(); // Close the sidebar after redirecting
+    };
+
     return (
         <div className="bg-white rounded-lg h-full p-4 py-6 flex flex-col">
             <div className="flex-1">
@@ -67,8 +72,17 @@ const SideBarList: React.FC = ({ }) => {
                             </Identity>
                             <FundButton hideText className="rounded-lg hover:bg-blue-600 focus:bg-blue-600 bg-slate-400 justify-start absolute right-0 top-0 translate-y-1/2 rounded-l-none" fundingUrl={onrampBuyUrl} />
                         </div>
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={handleSupportButton}
+                            className='bg-blue-600 text-white py-2 w-full mt-8 rounded-md'
+                        >
+                            Create a Campaign
+                        </motion.button>
                     </>
                 }
+
             </div>
 
             <div className="grid gap-2">

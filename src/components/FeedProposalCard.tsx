@@ -132,13 +132,13 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                             exit={{ opacity: 0, height: 0 }}
                         >
                             <div className="flex justify-between items-center text-sm mt-2">
-                                <div className="flex items-center text-sm text-slate-700">
+                                <div className="flex items-center text-sm text-white">
                                     <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
                                     </svg>
-                                    <span>{proposal.creator.name}</span>
+                                    <span className='text-white'>{proposal.creator.name}</span>
                                 </div>
-                                <span>{timeLeft}</span>
+                                <span>Ends {timeLeft}</span>
                             </div>
                         </motion.div>
                     )}
