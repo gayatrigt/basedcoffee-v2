@@ -16,7 +16,7 @@ export default function HomePage() {
           //  className=" text-white bg-white/10 border-2 border-white/40 p-4 flex flex-col gap-2 pt-8 rounded-lg"
           className=" text-white bg-slate-900/30 backdrop-blur-md border-2 border-slate-100/20 p-4 flex flex-col gap-2 pt-8 rounded-lg"
         >
-          <h1 className=" font-accent uppercase text-2xl">Based<br />Backers</h1>
+          <h1 className=" font-accent uppercase text-2xl">Based<br />Coffee</h1>
           <p className="mb-2 text-sm opacity-80">A place for builder, creators and innvators to grow and support</p>
           <HomepageCta />
         </div>

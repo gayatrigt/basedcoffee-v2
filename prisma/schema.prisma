@@ -29,6 +29,7 @@ model Fundraise {
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
     endAt       DateTime
+    txnHash     String?
     website     String?
     twitter     String?
     farcaster   String?

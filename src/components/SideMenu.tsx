@@ -43,7 +43,7 @@ const SideBarList: React.FC = ({ }) => {
     return (
         <div className="bg-white rounded-lg h-full p-4 py-6 flex flex-col">
             <div className="flex-1">
-                <h1 className=" text-blue-600 font-accent uppercase text-2xl mb-2">Based<br />Backers</h1>
+                <h1 className=" text-blue-600 font-accent uppercase text-2xl mb-2">Based<br />Coffee</h1>
 
                 {
                     address && <>
