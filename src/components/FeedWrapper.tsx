@@ -27,6 +27,9 @@ interface Proposal {
     deadline: string;
     creator: Creator;
     backers: number;
+    contract: string;
+    goalINR: number;
+    goalUSD: number;
 }
 
 const FeedWrapper = () => {

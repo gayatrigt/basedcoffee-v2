@@ -37,7 +37,7 @@ model Fundraise {
     farcaster   String?
     current     Float?
     currency    String?
-    contract    String?
+    contract    String?   @unique
     user        User      @relation(fields: [userId], references: [id])
     userId      String
     supports    Support[]

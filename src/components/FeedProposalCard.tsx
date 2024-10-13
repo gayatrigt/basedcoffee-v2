@@ -29,7 +29,11 @@ interface Proposal {
     deadline: string;
     creator: Creator;
     backers: number;
+    contract: string;
+    goalINR: number;
+    goalUSD: number;
 }
+
 
 interface FeedProposalCardProps {
     proposal: Proposal;
@@ -70,6 +74,8 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
         e.stopPropagation();
 
     }
+
+    const inr = Number(proposal.goalINR)
 
     return (
         <motion.div
@@ -119,8 +125,8 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                         />
                     </div>
                     <div className="flex justify-between mt-2 text-sm">
-                        <span>{humanizeNumber(proposal.current)} {proposal.currency}</span>
-                        <span>Goal: {humanizeNumber(proposal.goal)} {proposal.currency}</span>
+                        <span>{humanizeNumber(proposal.current)}</span>
+                        <span>Goal: {humanizeNumber(proposal.goal)}</span>
                     </div>
                 </motion.div>
 
@@ -144,7 +150,7 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                     )}
                 </AnimatePresence>
 
-                <SupportButton />
+                <SupportButton fundingContractAddress={proposal.contract} />
 
                 {/* <motion.button
                     whileHover={{ scale: 1.1 }}

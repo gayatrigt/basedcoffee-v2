@@ -4,10 +4,14 @@ import { db } from '~/server/db';
 export async function GET() {
     try {
         const fundraises = await db.fundraise.findMany({
+            where: {
+                contract: {
+                    not: null || "",
+                }
+            },
             orderBy: {
                 createdAt: 'desc'
             },
-            take: 10, // Limit to 10 most recent fundraises
             include: {
                 user: true,
                 supports: true
@@ -23,6 +27,8 @@ export async function GET() {
             videoUrl: fundraise.videoUrl,
             notionUrl: undefined,
             goal: fundraise.amount,
+            goalInr: fundraise.amountINR,
+            goalUSD: fundraise.amountUSDC,
             current: fundraise.supports.reduce((sum, support) => sum + support.amount, 0),
             currency: fundraise.currency,
             deadline: fundraise.endAt.toISOString(),
@@ -30,7 +36,8 @@ export async function GET() {
                 name: fundraise.user.name ?? 'Anonymous',
                 wallet: fundraise.user.walletAddress
             },
-            backers: fundraise.supports.length
+            backers: fundraise.supports.length,
+            contract: fundraise.contract
         }));
 
         return NextResponse.json(proposals);
