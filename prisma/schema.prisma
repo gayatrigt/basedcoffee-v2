@@ -24,7 +24,9 @@ model Fundraise {
     title       String
     description String
     category    String
-    amount      Float
+    amount      Float?
+    amountINR   Float?
+    amountUSDC  Float?
     videoUrl    String
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
