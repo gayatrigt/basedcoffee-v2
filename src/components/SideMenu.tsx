@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from "react";
 import { FundButton, getOnrampBuyUrl } from '@coinbase/onchainkit/fund';
 import { Avatar, EthBalance, Identity, Name } from "@coinbase/onchainkit/identity";
 import { WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { IoLogInSharp } from "react-icons/io5";
 import { PiSpinnerGap } from "react-icons/pi";
 import { RxAvatar } from "react-icons/rx";
@@ -120,6 +120,9 @@ export const SideMenu: React.FC<{
     const controls = useAnimation();
     const { address } = useAccount()
     console.log("🚀 ~ address:", address)
+    const pathname = usePathname()
+    const isHomepage = pathname === '/'
+
 
     const ref = useRef(null)
 
@@ -185,17 +188,21 @@ export const SideMenu: React.FC<{
                     variants={sidekickBodyStyles}
                     transition={{ type: "spring", damping: 60, stiffness: 180 }}
                 >
-                    {!address && <MotionLink
+                    {!address && !isHomepage && <MotionLink
                         variants={menuHandlerStyles}
                         transition={{ type: "spring", damping: 60, stiffness: 180 }}
-                        className="absolute top-4 right-0 border-2 py-2 px-4 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-white hover:border-slate-200 w-full  transform translate-x-32 flex items-center space-x-2"
                         href="/"
+                        className="border-none bg-transparent absolute top-4 right-0 outline-none"
                     >
-                        <IoLogInSharp /> <span className="text-sm">Login with Wallet</span>
+                        <div
+                            className="border-2 py-2 px-4 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-white hover:border-slate-200 w-full transform translate-x-32 flex items-center space-x-2"
+                        >
+                            <IoLogInSharp /> <span className="text-sm">Login with Wallet</span>
+                        </div>
                     </MotionLink>}
 
                     {address && <motion.button
-                        className="border-none bg-transparent absolute top-4 right-0 outline-none"
+                        className="c bg-transparent absolute top-4 -right-2  outline-none"
                         onClick={toggle}
                         variants={menuHandlerStyles}
                         transition={{ type: "spring", damping: 60, stiffness: 180 }}
