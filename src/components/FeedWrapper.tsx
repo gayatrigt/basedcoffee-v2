@@ -55,7 +55,7 @@ const FeedWrapper = () => {
             }
         };
 
-        fetchProposals();
+        void fetchProposals();
     }, []);
 
     useEffect(() => {
