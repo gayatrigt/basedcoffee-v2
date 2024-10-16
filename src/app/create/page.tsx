@@ -1,13 +1,19 @@
 'use client'
 
 import { LifecycleStatus, Transaction, TransactionButton, TransactionSponsor, TransactionStatus, TransactionStatusAction, TransactionStatusLabel } from '@coinbase/onchainkit/transaction';
-import React, { useRef, useState, useEffect } from 'react';
+import { Fundraise } from '@prisma/client';
+import Link from 'next/link';
+import React, { useEffect, useRef, useState } from 'react';
 import CurrencyInput from 'react-currency-input-field';
+import { CiShare1 } from "react-icons/ci";
 import { twMerge } from 'tailwind-merge';
-import { ContractFunctionParameters, decodeAbiParameters, parseEther } from 'viem';
+import { ContractFunctionParameters, parseEther } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import { useAccount } from 'wagmi';
 import { abi } from '~/abi/abi';
+import { useFundFormStore } from '~/store/fundFormStore';
+import { decodeProjectCreatedEvent } from '~/utils/decodeProjectCreatedEvent';
+import { IoCopyOutline } from "react-icons/io5";
 
 interface Category {
     id: number;
@@ -32,28 +38,57 @@ const formatter = new Intl.NumberFormat('en-IN', {
 
 const CreatePage = () => {
     const { address } = useAccount();
-    const [selectedCategory, setSelectedCategory] = useState<number>(1);
-    const [goalAmount, setGoalAmount] = useState<string>('');
-    const [title, setTitle] = useState<string>('');
-    const [description, setDescription] = useState<string>('');
-    const [video, setVideo] = useState<File | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-    const [submitMessage, setSubmitMessage] = useState<string>('');
+
+    const {
+        selectedCategory, setSelectedCategory,
+        goalAmount, setGoalAmount,
+        title, setTitle,
+        description, setDescription,
+        savedDetails, setSavedDetails,
+        videoUrl, setVideoUrl,
+        fundContract, setFundContract
+    } = useFundFormStore()
+    console.log("🚀 ~ CreatePage ~ fundContract:", fundContract)
+
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [isSuccess, setIsSuccess] = useState<boolean>(false);
-    const [savedDetails, setSavedDetails] = useState<any>(null);
+    const [video, setVideo] = useState<File | null>(null);
+
     const [exchangeRate, setExchangeRate] = useState<number>(0)
 
-    const testVideoUrl = 'https://isrjp0cckdzhlbu3.public.blob.vercel-storage.com/Sequence%2001_2-44E2qc0dlL0JCIbXZ9z7MXA7o6gRv9.mp4'
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [submitMessage, setSubmitMessage] = useState<string>('');
+    const [isSuccess, setIsSuccess] = useState<boolean>(true);
+
+    // const testVideoUrl = 'https://isrjp0cckdzhlbu3.public.blob.vercel-storage.com/Sequence%2001_2-44E2qc0dlL0JCIbXZ9z7MXA7o6gRv9.mp4'
 
     const handleGoalAmountChange = (value: string | undefined) => {
         setGoalAmount(value || '');
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setVideo(e.target.files[0]);
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const videoFile = e.target.files?.[0];
+
+        if (!videoFile) {
+            return;
         }
+
+        setVideo(videoFile);
+
+        // Upload video
+        const formData = new FormData();
+        formData.append('file', videoFile);
+
+        const uploadResponse = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+            throw new Error('Failed to upload video');
+        }
+
+        const { url } = await uploadResponse.json();
+        setVideoUrl(url);
     };
 
     const convertInrToEth = async (): Promise<void> => {
@@ -74,27 +109,10 @@ const CreatePage = () => {
         setSubmitMessage('');
 
         try {
-            // if (!video) {
-            //     throw new Error('Please upload a video pitch');
-            // }
+            if (!videoUrl) {
+                throw new Error('Please upload a video pitch');
+            }
 
-            // Upload video
-            // const formData = new FormData();
-            // formData.append('file', video);
-
-            // const uploadResponse = await fetch('/api/upload', {
-            //     method: 'POST',
-            //     body: formData,
-            // });
-
-            // if (!uploadResponse.ok) {
-            //     throw new Error('Failed to upload video');
-            // }
-
-            // const { url } = await uploadResponse.json();
-            const url = testVideoUrl
-
-            // Convert INR to ETH
             // const ethAmount = await convertInrToEth(parseFloat(goalAmount));
             const ethAmount = (parseFloat(goalAmount) / exchangeRate).toFixed(18);
 
@@ -109,7 +127,7 @@ const CreatePage = () => {
                     category: categories.find(cat => cat.id === selectedCategory)?.name,
                     description,
                     amount: parseFloat(ethAmount),
-                    videoUrl: url,
+                    videoUrl,
                     walletAddress: address
                 }),
             });
@@ -119,7 +137,7 @@ const CreatePage = () => {
                 throw new Error(errorData.error || 'Failed to create fundraise');
             }
 
-            const data = await response.json();
+            const data: { fundraise: Fundraise } = await response.json();
             setSavedDetails(data.fundraise);
             console.log(savedDetails)
             setSubmitMessage(`Fundraise proposal submitted successfully! Fundraise ID: ${data.fundraise.id}`);
@@ -130,12 +148,6 @@ const CreatePage = () => {
         } finally {
             setIsSubmitting(false);
         }
-    };
-
-    const handleConfirm = () => {
-        // Implement confirmation logic here
-        console.log("Fundraise confirmed");
-        // You might want to redirect the user or perform additional actions
     };
 
     const getContractArgs = () => {
@@ -164,30 +176,23 @@ const CreatePage = () => {
 
 
     const handleOnStatus = async (statusData: LifecycleStatus) => {
+        console.log("🚀 ~ handleOnStatus ~ statusData:", statusData.statusName)
+
         if (statusData.statusName === "success") {
             const txn = statusData.statusData.transactionReceipts[0]?.transactionHash as any
             const id = savedDetails.id
 
-            console.log(statusData)
+            console.log({ statusData })
 
             //get project address
-            const logs = statusData.statusData.transactionReceipts[0]?.logs[0]
+            const transactionReceipt = statusData.statusData.transactionReceipts[0]
 
-            const projectCreationLog = logs;
-
-            if (!projectCreationLog) {
-                throw new Error("Didn't get the project creation log")
+            if (!transactionReceipt) {
+                console.error('Transaction receipt not found')
+                return
             }
 
-            const projectAddressWithZeros = projectCreationLog?.data;
-
-            const decodedAddress = decodeAbiParameters(
-                [{ type: 'address' }],
-                projectAddressWithZeros as `0x${string}`,
-            );
-            const projectAddress = decodedAddress[0];
-            console.log("🚀 ~ handleOnStatus ~ projectAddress:", projectAddress)
-
+            const projectAddress = decodeProjectCreatedEvent(transactionReceipt)
 
             try {
                 const response = await fetch('/api/update-fundraise', {
@@ -207,13 +212,45 @@ const CreatePage = () => {
                 }
 
                 const updatedFundraise = await response.json();
-                setSavedDetails(null);
+
+                // TODO: uncomment this
+                // setSavedDetails(null);
+
+                setFundContract(projectAddress)
+
                 console.log('Transaction hash updated successfully');
             } catch (error) {
                 console.error('Error updating transaction hash:', error);
             }
         }
     }
+
+    const handleShare = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title,
+                    url: `/fund/${fundContract}`,
+                });
+                console.log('Content shared successfully');
+            } catch (error) {
+                console.log('Error sharing content:', error);
+            }
+        } else {
+            console.log('Web Share API not supported');
+            // Fallback behavior here (e.g., copy to clipboard)
+        }
+    };
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(`/fund/${fundContract}`);
+
+            alert('Link copied to clipboard');
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
+    };
 
     useEffect(() => {
         convertInrToEth()
@@ -225,7 +262,7 @@ const CreatePage = () => {
                 <h1 className="font-accent text-2xl text-blue-600 leading-normal font-bold tracking-wider my-12 text-center">
                     FUNDRAISE DETAILS
                 </h1>
-                <div className="w-full max-w-md space-y-4">
+                <div className="w-full max-w-md space-y-4 flex-1">
                     <div>
                         <h2 className="text-base text-gray-600">Title</h2>
                         <p className="text-lg font-semibold">{savedDetails.title}</p>
@@ -244,24 +281,48 @@ const CreatePage = () => {
                         <p className=' text-xs mt-1 text-slate-600'>Our platform works only with ETH as our base currency, we are planning to introduce more stable coins in future.</p>
                     </div>
 
-                    <div>
-                        <Transaction
-                            chainId={baseSepolia.id}
-                            contracts={getContractArgs()}
-                            onStatus={handleOnStatus}
-                            className="sticky bottom-2 z-10 col-span-4 col-start-1 row-start-3 w-full h-full"
+
+                </div>
+                <div className='w-full mt-4'>
+                    {!fundContract && <Transaction
+                        chainId={baseSepolia.id}
+                        contracts={getContractArgs()}
+                        onStatus={handleOnStatus}
+                        className="sticky bottom-2 z-10 col-span-4 col-start-1 row-start-3 w-full h-full"
+                    >
+                        <TransactionButton
+                            className="flex w-full items-center space-x-2 py-2 [&_span]:!text-sm [&_span]:!font-normal md:relative md:bottom-0 md:row-start-3 border-2 border-blue-600 bg-blue-600  text-white justify-center hover:bg-blue-600/90 transition-all duration-300 rounded-md"
+                            text="Confirm & Create"
+                        />
+                        <TransactionSponsor />
+                        <TransactionStatus>
+                            <TransactionStatusLabel />
+                            <TransactionStatusAction />
+                        </TransactionStatus>
+                    </Transaction>}
+
+                    {fundContract && <div className='flex space-x-2'>
+                        {/* make this a secondary */}
+                        <Link
+                            className="bg-blue-600 text-white p-2 rounded-md font-semibold flex items-center justify-center flex-1"
+                            href={`/fund/${fundContract}`}>
+                            Checkout your Fundraise
+                        </Link>
+
+                        <button
+                            className='border-2 text-base rounded-md bg-white/20 text-blue-600 border-blue-600 font-semibold backdrop-blur-sm hover:border-blue-500 h-12 w-12 flex items-center justify-center text-center'
+                            onClick={handleShare}
                         >
-                            <TransactionButton
-                                className="flex w-full items-center space-x-2 py-2 [&_span]:!text-sm md:relative md:bottom-0 md:row-start-3 border-2 border-blue-600 rounded-none uppercase bg-blue-600  text-white justify-center hover:bg-blue-600/90 transition-all duration-300"
-                                text="Confirm & Create"
-                            />
-                            <TransactionSponsor />
-                            <TransactionStatus>
-                                <TransactionStatusLabel />
-                                <TransactionStatusAction />
-                            </TransactionStatus>
-                        </Transaction>
-                    </div>
+                            <CiShare1 stroke="8" className="h-5 w-5 stroke-blue-600 stroke-1" />
+                        </button>
+
+                        <button
+                            className='border-2 text-base rounded-md bg-white/20 text-blue-600 border-blue-600 font-semibold backdrop-blur-sm hover:border-blue-500 h-12 w-12 flex items-center justify-center text-center'
+                            onClick={handleCopy}
+                        >
+                            <IoCopyOutline stroke="8" className="h-5 w-5 stroke-blue-600 stroke-1" />
+                        </button>
+                    </div>}
                 </div>
             </div>
         );
@@ -347,7 +408,7 @@ const CreatePage = () => {
 
                 <button
                     type="submit"
-                    className='bg-blue-600 text-white/80 py-2 w-full mt-2 rounded-md font-semibold'
+                    className='bg-blue-600 text-white py-2 w-full mt-2 rounded-md font-semibold'
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? 'Creating Fundraise...' : 'Create Fundraise'}

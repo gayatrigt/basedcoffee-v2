@@ -39,23 +39,23 @@ const FeedWrapper = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchProposals = async () => {
-            try {
-                const response = await fetch('/api/proposals');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch proposals');
-                }
-                const data = await response.json();
-                setProposals(data);
-            } catch (err) {
-                setError('Failed to load proposals. Please try again later.');
-                console.error('Error fetching proposals:', err);
-            } finally {
-                setLoading(false);
+    const fetchProposals = async () => {
+        try {
+            const response = await fetch('/api/proposals');
+            if (!response.ok) {
+                throw new Error('Failed to fetch proposals');
             }
-        };
+            const data = await response.json();
+            setProposals(data);
+        } catch (err) {
+            setError('Failed to load proposals. Please try again later.');
+            console.error('Error fetching proposals:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         void fetchProposals();
     }, []);
 

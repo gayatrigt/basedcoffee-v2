@@ -6,7 +6,9 @@ export async function GET() {
         const fundraises = await db.fundraise.findMany({
             where: {
                 contract: {
-                    not: undefined,
+                    not: {
+                        equals: ""
+                    },
                 }
             },
             orderBy: {
