@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import ProposalCard from './FeedProposalCard';
 import { FeedVideo } from './FeedVideo';
+import LoginButton from './LoginButton';
 
 interface Creator {
     name: string;
@@ -84,7 +85,19 @@ const FeedWrapper = () => {
     }, [proposals]);
 
     if (loading) {
-        return <div className='text-white font-accent text-2xl text-center'>Fetching Proposals</div>;
+        return <div className='text-white font-accent text-2xl text-left px-4'>Fetching Proposals</div>;
+    }
+
+    if (proposals.length === 0) {
+        return <div className='text-white text-left px-4'>
+            <span className="text-lg text-balance leading-10 font-accent">There are no active proposals right now</span>
+            <button
+                className='bg-blue-600 text-white/80 py-2 w-full rounded-md border-2 border-blue-600 hover:bg-blue-700 mt-6'
+            // className='border-2 py-2 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-white hover:border-slate-200 w-full text-sm mt-4'
+            >
+                Add your proposal
+            </button>
+        </div>;
     }
 
     if (error) {

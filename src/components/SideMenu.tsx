@@ -190,7 +190,9 @@ export const SideMenu: React.FC<{
                     >
                         {/* {isOpen ? "Close" : "Open"} */}
                         {!address && <div
-                            className="border-blue-600 text-blue-600 p-2 rounded-lg mt-4 bg-white flex items-center space-x-2 transform translate-x-32">
+                            // className="border-blue-600 text-blue-600 p-2 rounded-lg mt-4 bg-white flex items-center space-x-2 transform translate-x-32"
+                            className="border-2 py-2 px-4 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-white hover:border-slate-200 w-full  transform translate-x-32 flex items-center space-x-2"
+                        >
                             <IoLogInSharp /> <span className="text-sm">Login with Wallet</span>
                         </div>}
 
