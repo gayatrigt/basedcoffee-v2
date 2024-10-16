@@ -4,14 +4,15 @@ import React, { useEffect, useRef } from "react";
 
 import { FundButton, getOnrampBuyUrl } from '@coinbase/onchainkit/fund';
 import { Avatar, EthBalance, Identity, Name } from "@coinbase/onchainkit/identity";
-import { WalletDropdownBasename, WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet";
+import { WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet";
+import { useRouter } from "next/navigation";
+import { IoLogInSharp } from "react-icons/io5";
 import { PiSpinnerGap } from "react-icons/pi";
 import { RxAvatar } from "react-icons/rx";
 import { useOnClickOutside } from 'usehooks-ts';
 import { useAccount } from "wagmi";
 import { env } from "~/env";
 import { useSidebarStore } from "~/store/sidebarStore";
-import { useRouter } from "next/navigation";
 
 const SideBarList: React.FC = ({ }) => {
     const { address, isDisconnected } = useAccount();
@@ -188,6 +189,11 @@ export const SideMenu: React.FC<{
                         transition={{ type: "spring", damping: 60, stiffness: 180 }}
                     >
                         {/* {isOpen ? "Close" : "Open"} */}
+                        {!address && <div
+                            className="border-blue-600 text-blue-600 p-2 rounded-lg mt-4 bg-white flex items-center space-x-2 transform translate-x-32">
+                            <IoLogInSharp /> <span className="text-sm">Login with Wallet</span>
+                        </div>}
+
                         {address && <div className="bg-blue-600 p-1 rounded-full border-2 border-blue-600">
                             <Avatar
                                 address={address}

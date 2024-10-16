@@ -84,7 +84,7 @@ const FeedWrapper = () => {
     }, [proposals]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className='text-white font-accent text-2xl text-center'>Fetching Proposals</div>;
     }
 
     if (error) {
