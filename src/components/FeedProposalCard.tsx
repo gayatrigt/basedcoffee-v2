@@ -29,7 +29,11 @@ interface Proposal {
     deadline: string;
     creator: Creator;
     backers: number;
+    contract: string;
+    goalINR: number;
+    goalUSD: number;
 }
+
 
 interface FeedProposalCardProps {
     proposal: Proposal;
@@ -70,6 +74,8 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
         e.stopPropagation();
 
     }
+
+    const inr = Number(proposal.goalINR)
 
     return (
         <motion.div
@@ -119,8 +125,8 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                         />
                     </div>
                     <div className="flex justify-between mt-2 text-sm">
-                        <span>{humanizeNumber(proposal.current)} {proposal.currency}</span>
-                        <span>Goal: {humanizeNumber(proposal.goal)} {proposal.currency}</span>
+                        <span>{humanizeNumber(proposal.current)}</span>
+                        <span>Goal: {humanizeNumber(proposal.goal)}</span>
                     </div>
                 </motion.div>
 
@@ -132,19 +138,19 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                             exit={{ opacity: 0, height: 0 }}
                         >
                             <div className="flex justify-between items-center text-sm mt-2">
-                                <div className="flex items-center text-sm text-slate-700">
+                                <div className="flex items-center text-sm text-white">
                                     <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
                                     </svg>
-                                    <span>{proposal.creator.name}</span>
+                                    <span className='text-white'>{proposal.creator.name}</span>
                                 </div>
-                                <span>{timeLeft}</span>
+                                <span>Ends {timeLeft}</span>
                             </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
 
-                <SupportButton />
+                <SupportButton fundingContractAddress={proposal.contract} />
 
                 {/* <motion.button
                     whileHover={{ scale: 1.1 }}
