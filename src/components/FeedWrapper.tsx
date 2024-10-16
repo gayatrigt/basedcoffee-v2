@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import ProposalCard from './FeedProposalCard';
 import { FeedVideo } from './FeedVideo';
-import LoginButton from './LoginButton';
+import Link from "next/link"
 
 interface Creator {
     name: string;
@@ -91,12 +91,12 @@ const FeedWrapper = () => {
     if (proposals.length === 0) {
         return <div className='text-white text-left px-6'>
             <span className="text-lg text-balance leading-10 font-accent">There are no active proposals right now</span>
-            <button
-                className='bg-blue-600 text-white/80 py-2 w-full rounded-md border-2 border-blue-600 hover:bg-blue-700 mt-6'
+            <Link href='/create-fundraise'
+                className='block px-4 bg-blue-600 text-white/80 py-2 w-full rounded-md border-2 border-blue-600 hover:bg-blue-700 mt-6'
             // className='border-2 py-2 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-white hover:border-slate-200 w-full text-sm mt-4'
             >
                 Add your proposal
-            </button>
+            </Link>
         </div>;
     }
 

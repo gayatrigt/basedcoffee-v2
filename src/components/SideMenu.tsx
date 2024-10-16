@@ -14,6 +14,7 @@ import { useAccount } from "wagmi";
 import { env } from "~/env";
 import { useSidebarStore } from "~/store/sidebarStore";
 import Link from 'next/link';
+import { twMerge } from "tailwind-merge";
 
 const SideBarList: React.FC = ({ }) => {
     const { address, isDisconnected } = useAccount();
@@ -201,24 +202,27 @@ export const SideMenu: React.FC<{
                         </div>
                     </MotionLink>}
 
-                    {address && <motion.button
-                        className="c bg-transparent absolute top-4 -right-2  outline-none"
+                    <motion.button
+                        className={twMerge(
+                            "border-none bg-transparent absolute top-4 right-0 outline-none",
+                            address ? "opacity-100" : "opacity-0"
+                        )}
                         onClick={toggle}
                         variants={menuHandlerStyles}
                         transition={{ type: "spring", damping: 60, stiffness: 180 }}
                     >
-                        <div className="bg-blue-600 p-1 rounded-full border-2 border-blue-600">
+                        {address && <div className="bg-blue-600 p-1 rounded-full border-2 border-blue-600">
                             <Avatar
                                 address={address}
                                 defaultComponent={<RxAvatar className='h-8 w-8' />}
                                 loadingComponent={<PiSpinnerGap className='h-8 w-8 animate-spin' />}
                                 className="h-8 w-8 text-white"
                             />
-                        </div>
-                    </motion.button>}
+                        </div>}
+                    </motion.button>
                     <SideBarList />
                 </motion.div>
-            </div>
+            </div >
         </>
     );
 };
