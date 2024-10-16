@@ -13,6 +13,7 @@ import { useOnClickOutside } from 'usehooks-ts';
 import { useAccount } from "wagmi";
 import { env } from "~/env";
 import { useSidebarStore } from "~/store/sidebarStore";
+import Link from 'next/link';
 
 const SideBarList: React.FC = ({ }) => {
     const { address, isDisconnected } = useAccount();
@@ -109,6 +110,8 @@ const SideBarList: React.FC = ({ }) => {
     )
 };
 
+const MotionLink = motion(Link);
+
 export const SideMenu: React.FC<{
     overlayColor?: string;
     width?: number;
@@ -182,29 +185,30 @@ export const SideMenu: React.FC<{
                     variants={sidekickBodyStyles}
                     transition={{ type: "spring", damping: 60, stiffness: 180 }}
                 >
-                    <motion.button
+                    {!address && <MotionLink
+                        variants={menuHandlerStyles}
+                        transition={{ type: "spring", damping: 60, stiffness: 180 }}
+                        className="absolute top-4 right-0 border-2 py-2 px-4 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-white hover:border-slate-200 w-full  transform translate-x-32 flex items-center space-x-2"
+                        href="/"
+                    >
+                        <IoLogInSharp /> <span className="text-sm">Login with Wallet</span>
+                    </MotionLink>}
+
+                    {address && <motion.button
                         className="border-none bg-transparent absolute top-4 right-0 outline-none"
                         onClick={toggle}
                         variants={menuHandlerStyles}
                         transition={{ type: "spring", damping: 60, stiffness: 180 }}
                     >
-                        {/* {isOpen ? "Close" : "Open"} */}
-                        {!address && <div
-                            // className="border-blue-600 text-blue-600 p-2 rounded-lg mt-4 bg-white flex items-center space-x-2 transform translate-x-32"
-                            className="border-2 py-2 px-4 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-white hover:border-slate-200 w-full  transform translate-x-32 flex items-center space-x-2"
-                        >
-                            <IoLogInSharp /> <span className="text-sm">Login with Wallet</span>
-                        </div>}
-
-                        {address && <div className="bg-blue-600 p-1 rounded-full border-2 border-blue-600">
+                        <div className="bg-blue-600 p-1 rounded-full border-2 border-blue-600">
                             <Avatar
                                 address={address}
                                 defaultComponent={<RxAvatar className='h-8 w-8' />}
                                 loadingComponent={<PiSpinnerGap className='h-8 w-8 animate-spin' />}
                                 className="h-8 w-8 text-white"
                             />
-                        </div>}
-                    </motion.button>
+                        </div>
+                    </motion.button>}
                     <SideBarList />
                 </motion.div>
             </div>
