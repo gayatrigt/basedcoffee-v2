@@ -85,11 +85,11 @@ const FeedWrapper = () => {
     }, [proposals]);
 
     if (loading) {
-        return <div className='text-white font-accent text-2xl text-left px-4'>Fetching Proposals</div>;
+        return <div className='text-white font-accent text-2xl text-left px-6'>Fetching Proposals</div>;
     }
 
     if (proposals.length === 0) {
-        return <div className='text-white text-left px-4'>
+        return <div className='text-white text-left px-6'>
             <span className="text-lg text-balance leading-10 font-accent">There are no active proposals right now</span>
             <button
                 className='bg-blue-600 text-white/80 py-2 w-full rounded-md border-2 border-blue-600 hover:bg-blue-700 mt-6'
