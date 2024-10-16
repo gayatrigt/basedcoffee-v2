@@ -1,7 +1,7 @@
 'use client'
 
 import { LifecycleStatus, Transaction, TransactionButton, TransactionSponsor, TransactionStatus, TransactionStatusAction, TransactionStatusLabel } from '@coinbase/onchainkit/transaction';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import { twMerge } from 'tailwind-merge';
 import { ContractFunctionParameters, decodeAbiParameters, parseEther } from 'viem';
@@ -42,6 +42,9 @@ const CreatePage = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
     const [savedDetails, setSavedDetails] = useState<any>(null);
+    const [exchangeRate, setExchangeRate] = useState<number>(0)
+
+    const testVideoUrl = 'https://isrjp0cckdzhlbu3.public.blob.vercel-storage.com/Sequence%2001_2-44E2qc0dlL0JCIbXZ9z7MXA7o6gRv9.mp4'
 
     const handleGoalAmountChange = (value: string | undefined) => {
         setGoalAmount(value || '');
@@ -53,13 +56,12 @@ const CreatePage = () => {
         }
     };
 
-    const convertInrToEth = async (inrAmount: number): Promise<string> => {
+    const convertInrToEth = async (): Promise<void> => {
         try {
             const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=INR');
             const data = await response.json();
             const ethToInrRate = data.INR;
-            const ethAmount = inrAmount / ethToInrRate;
-            return ethAmount.toFixed(18); // ETH has 18 decimal places
+            setExchangeRate(ethToInrRate)
         } catch (error) {
             console.error('Error fetching ETH to INR rate:', error);
             throw new Error('Failed to convert INR to ETH');
@@ -72,29 +74,29 @@ const CreatePage = () => {
         setSubmitMessage('');
 
         try {
-            if (!video) {
-                throw new Error('Please upload a video pitch');
-            }
+            // if (!video) {
+            //     throw new Error('Please upload a video pitch');
+            // }
 
             // Upload video
-            const formData = new FormData();
-            formData.append('file', video);
+            // const formData = new FormData();
+            // formData.append('file', video);
 
-            const uploadResponse = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-            });
+            // const uploadResponse = await fetch('/api/upload', {
+            //     method: 'POST',
+            //     body: formData,
+            // });
 
-            if (!uploadResponse.ok) {
-                throw new Error('Failed to upload video');
-            }
+            // if (!uploadResponse.ok) {
+            //     throw new Error('Failed to upload video');
+            // }
 
-            const { url } = await uploadResponse.json();
+            // const { url } = await uploadResponse.json();
+            const url = testVideoUrl
 
             // Convert INR to ETH
-            const ethAmount = await convertInrToEth(parseFloat(goalAmount));
-
-            console.log(goalAmount)
+            // const ethAmount = await convertInrToEth(parseFloat(goalAmount));
+            const ethAmount = (parseFloat(goalAmount) / exchangeRate).toFixed(18);
 
             // Save fundraise data to database
             const response = await fetch('/api/create-fundraise', {
@@ -107,7 +109,6 @@ const CreatePage = () => {
                     category: categories.find(cat => cat.id === selectedCategory)?.name,
                     description,
                     amount: parseFloat(ethAmount),
-                    amountINR: parseFloat(goalAmount),
                     videoUrl: url,
                     walletAddress: address
                 }),
@@ -145,7 +146,7 @@ const CreatePage = () => {
         const functionName = "createProject"
         const args = [
             savedDetails.title,
-            parseEther(savedDetails.amount.toString()),
+            savedDetails.amount && parseEther(savedDetails.amount.toString()),
             BigInt(startDate),
             BigInt(deadline)
         ]
@@ -214,6 +215,10 @@ const CreatePage = () => {
         }
     }
 
+    useEffect(() => {
+        convertInrToEth()
+    }, [])
+
     if (isSuccess && savedDetails) {
         return (
             <div className="flex h-[100dvh] flex-col items-center justify-center bg-slate-100 p-4">
@@ -222,20 +227,21 @@ const CreatePage = () => {
                 </h1>
                 <div className="w-full max-w-md space-y-4">
                     <div>
-                        <h2 className="text-lg text-gray-600">Title</h2>
-                        <p className="text-xl font-semibold">{savedDetails.title}</p>
+                        <h2 className="text-base text-gray-600">Title</h2>
+                        <p className="text-lg font-semibold">{savedDetails.title}</p>
                     </div>
                     <div>
-                        <h2 className="text-lg text-gray-600">Category</h2>
-                        <p className="text-xl font-semibold">{savedDetails.category}</p>
+                        <h2 className="text-base text-gray-600">Category</h2>
+                        <p className="text-lg font-semibold">{savedDetails.category}</p>
                     </div>
                     <div>
-                        <h2 className="text-lg text-gray-600">Description</h2>
-                        <p className="text-xl">{savedDetails.description}</p>
+                        <h2 className="text-base text-gray-600">Description</h2>
+                        <p className="text-lg">{savedDetails.description}</p>
                     </div>
                     <div>
-                        <h2 className="text-lg text-gray-600">Goal Amount</h2>
-                        <p className="text-xl font-semibold">{formatter.format(savedDetails.amountINR)}</p>
+                        <h2 className="text-base text-gray-600">Goal Amount</h2>
+                        <p className="text-lg font-semibold">{Number(savedDetails.amount).toPrecision(4)} ETH (~{formatter.format(savedDetails.amount * exchangeRate)})</p>
+                        <p className=' text-xs mt-1 text-slate-600'>Our platform works only with ETH as our base currency, we are planning to introduce more stable coins in future.</p>
                     </div>
 
                     <div>
@@ -267,9 +273,9 @@ const CreatePage = () => {
                 CREATE YOUR<br />FUNDRAISE
             </h1>
 
-            <div className='border border-dashed border-blue-700 text-center rounded-lg flex-1 mb-4 w-full flex justify-center items-center'
+            <div className='border border-dashed border-blue-700 text-center rounded-lg flex-1 mb-4 w-full flex justify-center items-center py-4'
                 onClick={() => fileInputRef.current?.click()}>
-                <h2 className="text-xl text-gray-600"> {video ? video.name : 'Upload a 2 minute video pitch'}</h2>
+                <h2 className="text-base text-gray-600"> {video ? video.name : 'Upload a 2 minute video pitch'}</h2>
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -279,9 +285,9 @@ const CreatePage = () => {
                 />
             </div>
 
-            <div className="w-full max-w-md space-y-4">
+            <div className="w-full max-w-md space-y-4 pb-4">
                 <div>
-                    <h2 className="text-lg text-gray-600 mb-1">Category</h2>
+                    <h2 className="text-base text-gray-600 mb-1">Category</h2>
                     <div className="flex flex-wrap gap-2">
                         {categories.map((category) => (
                             <span
@@ -299,7 +305,7 @@ const CreatePage = () => {
                 </div>
 
                 <div>
-                    <h2 className="text-lg text-gray-600">What do you want to raise funds for?</h2>
+                    <h2 className="text-base text-gray-600">What do you want to raise funds for?</h2>
                     <input
                         type="text"
                         placeholder="Fundraise Title"
@@ -310,7 +316,7 @@ const CreatePage = () => {
                 </div>
 
                 <div>
-                    <h2 className="text-lg text-gray-600">Briefly explain how you will utilise the funds, and why is it required?</h2>
+                    <h2 className="text-base text-gray-600">Briefly explain how you will utilise the funds, and why is it required?</h2>
                     <textarea
                         placeholder="Describe your fundraise"
                         value={description}
@@ -321,7 +327,7 @@ const CreatePage = () => {
                 </div>
 
                 <div>
-                    <h2 className="text-lg text-gray-600">What is the goal amount?</h2>
+                    <h2 className="text-base text-gray-600">What is the goal amount?</h2>
                     <CurrencyInput
                         id="goal-amount"
                         name="goal-amount"
