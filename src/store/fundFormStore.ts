@@ -1,3 +1,4 @@
+import { Fundraise } from '@prisma/client';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -8,14 +9,14 @@ interface FundFormState {
     description: string;
     videoUrl: string;
     fundContract?: string;
-    savedDetails: any | null;
+    savedDetails: Fundraise | null;
     setSelectedCategory: (category: number) => void;
     setGoalAmount: (amount: string) => void;
     setTitle: (title: string) => void;
     setDescription: (description: string) => void;
     setVideoUrl: (url: string) => void;
     setFundContract: (contractAddress: string) => void;
-    setSavedDetails: (details: any | null) => void;
+    setSavedDetails: (details: Fundraise | null) => void;
     reset: () => void;
 }
 
