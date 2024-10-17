@@ -48,7 +48,6 @@ const CreatePage = () => {
         videoUrl, setVideoUrl,
         fundContract, setFundContract
     } = useFundFormStore()
-    console.log("🚀 ~ CreatePage ~ fundContract:", fundContract)
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [video, setVideo] = useState<File | null>(null);
@@ -157,8 +156,8 @@ const CreatePage = () => {
 
         const functionName = "createProject"
         const args = [
-            savedDetails.title,
-            savedDetails.amount && parseEther(savedDetails.amount.toString()),
+            savedDetails?.title,
+            savedDetails?.amount && parseEther(savedDetails.amount.toString()),
             BigInt(startDate),
             BigInt(deadline)
         ]
@@ -176,11 +175,14 @@ const CreatePage = () => {
 
 
     const handleOnStatus = async (statusData: LifecycleStatus) => {
-        console.log("🚀 ~ handleOnStatus ~ statusData:", statusData.statusName)
+        if (!savedDetails?.id) {
+            console.error('Fundraise ID not found')
+            return
+        }
 
         if (statusData.statusName === "success") {
             const txn = statusData.statusData.transactionReceipts[0]?.transactionHash as any
-            const id = savedDetails.id
+            const id = savedDetails?.id
 
             console.log({ statusData })
 
@@ -226,11 +228,11 @@ const CreatePage = () => {
     }
 
     const handleShare = async () => {
-        if (navigator.share) {
+        if (navigator.share && savedDetails) {
             try {
                 await navigator.share({
                     title,
-                    url: `/fund/${fundContract}`,
+                    url: `/fund/${savedDetails.id}`,
                 });
                 console.log('Content shared successfully');
             } catch (error) {
@@ -244,7 +246,8 @@ const CreatePage = () => {
 
     const handleCopy = async () => {
         try {
-            await navigator.clipboard.writeText(`/fund/${fundContract}`);
+            if (!savedDetails) { return; }
+            await navigator.clipboard.writeText(`/fund/${savedDetails.id}`);
 
             alert('Link copied to clipboard');
         } catch (err) {
@@ -277,7 +280,7 @@ const CreatePage = () => {
                     </div>
                     <div>
                         <h2 className="text-base text-gray-600">Goal Amount</h2>
-                        <p className="text-lg font-semibold">{Number(savedDetails.amount).toPrecision(4)} ETH (~{formatter.format(savedDetails.amount * exchangeRate)})</p>
+                        <p className="text-lg font-semibold">{Number(savedDetails.amount).toPrecision(4)} ETH (~{formatter.format((savedDetails?.amount || 0) * exchangeRate)})</p>
                         <p className=' text-xs mt-1 text-slate-600'>Our platform works only with ETH as our base currency, we are planning to introduce more stable coins in future.</p>
                     </div>
 
@@ -305,7 +308,7 @@ const CreatePage = () => {
                         {/* make this a secondary */}
                         <Link
                             className="bg-blue-600 text-white p-2 rounded-md font-semibold flex items-center justify-center flex-1"
-                            href={`/fund/${fundContract}`}>
+                            href={`/fund/${savedDetails.id}`}>
                             Checkout your Fundraise
                         </Link>
 

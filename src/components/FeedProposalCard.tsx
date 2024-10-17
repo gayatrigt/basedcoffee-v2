@@ -1,9 +1,8 @@
+"use client";
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import SupportButton from './SupportButton';
-
-
 
 interface Creator {
     name: string;
@@ -54,7 +53,9 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
     const progress = (proposal.current / proposal.goal) * 100;
-    const timeLeft = formatDistanceToNow(new Date(proposal.deadline), { addSuffix: true });
+
+    console.log("🚀 ~ proposal.deadline:", proposal.deadline)
+    const timeLeft = proposal.deadline && formatDistanceToNow(new Date(proposal.deadline), { addSuffix: true });
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
