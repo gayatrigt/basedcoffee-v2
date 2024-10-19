@@ -249,7 +249,7 @@ const CreatePage = () => {
     };
 
     useEffect(() => {
-        convertInrToEth()
+        void convertInrToEth()
     }, [])
 
     useEffect(() => {
