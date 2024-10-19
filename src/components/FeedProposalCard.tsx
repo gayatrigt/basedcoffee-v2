@@ -192,7 +192,7 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                     {secondaryButton}
                 </div>}
 
-                {!secondaryButton && <div>
+                {!secondaryButton && isExpanded && <div>
                     <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
                 </div>}
 

@@ -11,7 +11,7 @@ interface FeedVideoProps {
 export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const { isMuted, toggleMute } = useMutedStore();
+    const { isMuted, toggleMute, setMuted } = useMutedStore();
     const [isHolding, setIsHolding] = useState<boolean>(false);
     const holdTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -19,6 +19,8 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
         if (videoRef.current) {
             try {
                 await videoRef.current.play();
+                // un-mute if video is playing
+                setMuted(true)
                 setIsPlaying(true);
             } catch (error) {
                 console.error("Error playing video:", error);
@@ -54,21 +56,11 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
     };
 
     useEffect(() => {
-
-
         document.addEventListener('visibilitychange', handleVisibilityChange);
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
     }, [inView, isHolding, playVideo, pauseVideo]);
-
-    const togglePlay = useCallback(async () => {
-        if (isPlaying) {
-            await pauseVideo();
-        } else {
-            await playVideo();
-        }
-    }, [isPlaying, pauseVideo, playVideo]);
 
     const handleTouchStart = useCallback(() => {
         holdTimeoutRef.current = setTimeout(() => {
