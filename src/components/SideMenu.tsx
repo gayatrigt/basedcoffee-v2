@@ -47,7 +47,7 @@ const SideBarList: React.FC = ({ }) => {
     };
 
     const handleDisconnect = () => {
-        disconnectAsync()
+        void disconnectAsync()
         router.push('/')
     }
 
