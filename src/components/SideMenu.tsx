@@ -196,9 +196,9 @@ export const SideMenu: React.FC<{
                         className="border-none bg-transparent absolute top-4 right-0 outline-none"
                     >
                         <div
-                            className="border-2 py-2 px-4 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-white hover:border-slate-200 w-full transform translate-x-32 flex items-center space-x-2"
+                            className="border-2 py-2 px-4 rounded-md bg-white/10 border-blue-600 backdrop-blur-sm text-white hover:border-slate-200 w-full transform translate-x-32 flex items-center space-x-2"
                         >
-                            <IoLogInSharp /> <span className="text-sm">Login with Wallet</span>
+                            <IoLogInSharp /> <span className="text-sm">Login to Support</span>
                         </div>
                     </MotionLink>}
 

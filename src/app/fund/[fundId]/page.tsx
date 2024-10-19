@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
 import React from 'react';
+import { IoLogInSharp } from 'react-icons/io5';
 import ProposalCard from "~/components/FeedProposalCard";
 import { FeedVideo } from '~/components/FeedVideo';
 import { Proposal } from '~/components/FeedWrapper';
@@ -50,7 +51,6 @@ const FeedPage: NextPage<{ params: { fundId: string } }> = async ({ params }) =>
                             inView
                         />
                     )}
-
 
                     <ProposalCard
                         proposal={proposal}

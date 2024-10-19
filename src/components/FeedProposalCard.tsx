@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import SupportButton from './SupportButton';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
 interface Creator {
     name: string;
@@ -83,18 +84,27 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
 
     return (
         <motion.div
-            className="absolute bottom-0 left-0 w-full p-2"
+            className="absolute bottom-0 left-0 w-full"
             initial={{ y: 0 }}
             // animate={{ y: isExpanded ? -100 : 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
         >
             <motion.div
                 ref={cardRef}
-                className=" text-white bg-slate-900/30 backdrop-blur-md border-2 border-slate-900/20 p-4 flex flex-col gap-2 pt-8 rounded-lg"
+                className=" text-white bg-slate-900/30 backdrop-blur-md border-2 border-slate-900/20 p-2 flex flex-col gap-2 pt-4 rounded-lg"
                 whileHover={{ scale: 1.02 }}
                 onClick={handleCardClick}
             >
-                <h3 className='font-accent text-sm leading-6 tracking-wider mb-2'>{proposal.title}</h3>
+                <div className='flex relative'>
+                    <h3 className='font-accent text-sm leading-6 tracking-wider mb-2'>{proposal.title}</h3>
+                    {!isExpanded && (
+                        <ChevronUp className='absolute right-0 h-6 w-6 text-white' />
+                    )}
+                    {isExpanded && (
+                        <ChevronDown className='absolute right-0 h-6 w-6 text-white' />
+                    )}
+                </div>
+
 
                 <AnimatePresence>
                     {isExpanded && (
@@ -109,12 +119,12 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                     )}
                 </AnimatePresence>
 
-                <div className='flex  justify-between items-center'>
+                {isExpanded && (<div className='flex  justify-between items-center'>
                     <span className="bg-blue-100/50 text-blue-800 text-xs font-medium mr-2 px-4 py-1 rounded inline-block">
                         {proposal.category}
                     </span>
                     <span className='text-sm text-slate-100 ml-2'>{proposal.backers} backers</span>
-                </div>
+                </div>)}
 
                 <motion.div
                     layout
@@ -130,7 +140,7 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                     </div>
                     <div className="flex justify-between mt-2 text-sm">
                         <span>{humanizeNumber(proposal.current)}</span>
-                        <span>Goal: {humanizeNumber(proposal.goal)}</span>
+                        <span>Goal: {humanizeNumber(proposal.goal)} ETH</span>
                     </div>
                 </motion.div>
 
