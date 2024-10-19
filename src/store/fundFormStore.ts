@@ -19,6 +19,7 @@ interface FundFormState {
     setVideoUrl: (url: string) => void;
     setFundContract: (contractAddress: string) => void;
     setSavedDetails: (details: Fundraise | null) => void;
+    resetSavedDetails: () => void;
     reset: () => void;
 }
 
@@ -45,6 +46,7 @@ export const useFundFormStore = create<FundFormState>()(
             setVideoUrl: (url) => set({ videoUrl: url }),
             setSavedDetails: (details) => set({ savedDetails: details }),
             reset: () => set(initialState),
+            resetSavedDetails: () => set({ savedDetails: null }),
             setFundContract: (contractAddress) => set({ fundContract: contractAddress }),
         }),
         {

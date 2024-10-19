@@ -55,7 +55,7 @@ const FeedPage: NextPage<{ params: { fundId: string } }> = async ({ params }) =>
                     <ProposalCard
                         proposal={proposal}
                         secondaryButton={
-                            <ProposalShareButton proposal={proposal} />
+                            <ProposalShareButton proposal={proposal} variant='default' />
                         }
                     />
                 </div>

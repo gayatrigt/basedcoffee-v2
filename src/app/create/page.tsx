@@ -49,7 +49,9 @@ const CreatePage = () => {
         savedDetails, setSavedDetails,
         videoUrl, setVideoUrl,
         fundContract, setFundContract,
-        name, setName
+        name, setName,
+        reset,
+        resetSavedDetails
     } = useFundFormStore()
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,6 +62,9 @@ const CreatePage = () => {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [submitMessage, setSubmitMessage] = useState<string>('');
     const [isSuccess, setIsSuccess] = useState<boolean>(true);
+
+    console.log(savedDetails
+    )
 
     // const testVideoUrl = 'https://isrjp0cckdzhlbu3.public.blob.vercel-storage.com/Sequence%2001_2-44E2qc0dlL0JCIbXZ9z7MXA7o6gRv9.mp4'
 
@@ -219,11 +224,9 @@ const CreatePage = () => {
 
                 const updatedFundraise = await response.json();
 
-                // TODO: uncomment this
                 // setSavedDetails(null);
-
                 setFundContract(projectAddress)
-
+                // reset()
                 console.log('Transaction hash updated successfully');
             } catch (error) {
                 console.error('Error updating transaction hash:', error);
@@ -245,6 +248,23 @@ const CreatePage = () => {
     useEffect(() => {
         convertInrToEth()
     }, [])
+
+    useEffect(() => {
+        // Reset savedDetails when component mounts
+        resetSavedDetails();
+
+        // Cleanup function to reset savedDetails when component unmounts
+        return () => {
+            resetSavedDetails();
+        };
+    }, [resetSavedDetails]);
+
+    useEffect(() => {
+        // Reset entire form state when navigating away from the page
+        return () => {
+            reset();
+        };
+    }, [reset]);
 
     if (isSuccess && savedDetails) {
         return (
@@ -299,7 +319,7 @@ const CreatePage = () => {
                             Checkout your Fundraise
                         </Link>
 
-                        <ProposalShareButton proposal={savedDetails} />
+                        <ProposalShareButton proposal={savedDetails} variant='blue' />
 
                         <button
                             className='border-2 text-base rounded-md bg-white/20 text-blue-600 border-blue-600 font-semibold backdrop-blur-sm hover:border-blue-500 h-12 w-12 flex items-center justify-center text-center'
@@ -331,11 +351,11 @@ const CreatePage = () => {
                 />
             </div>
 
-            <div>
+            <div className='w-full pb-4'>
                 <h2 className="text-base text-gray-600">Name</h2>
                 <input
                     type="text"
-                    placeholder="Fundraise Title"
+                    placeholder="Your Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
