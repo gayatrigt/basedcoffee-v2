@@ -78,7 +78,7 @@ const SupportButton: React.FC<SupportButtonProps> = ({ fundingContractAddress, a
             onStatus={handleOnStatus}
         >
             <TransactionButton
-                className='bg-blue-600 text-white py-2 w-full rounded-md font-semibold'
+                className='bg-blue-600 text-white py-2 w-full rounded-md font-semibold hover:bg-blue-500'
                 text='Send a Cofffee'
             />
             <TransactionSponsor />

@@ -6,7 +6,7 @@ export default function LoginButton() {
         <WalletWrapper
             // className="min-w-[90px]"
             text="Login"
-            className='border-2 py-2 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-[#030712] hover:border-slate-500 w-full '
+            className='border-2 py-2 rounded-md bg-black/20 border-slate-600 backdrop-blur-sm text-[#030712] hover:border-slate-500 w-full hover:bg-white/10'
             withWalletAggregator={true}
         />
     );

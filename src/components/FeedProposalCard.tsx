@@ -91,7 +91,6 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
             <motion.div
                 ref={cardRef}
                 className=" text-white bg-slate-900/30 backdrop-blur-md border-2 border-slate-900/20 p-4 flex flex-col gap-2 pt-8 rounded-lg"
-                whileHover={{ scale: 1.02 }}
                 onClick={handleCardClick}
             >
                 <h3 className='font-accent text-sm leading-6 tracking-wider mb-2'>{proposal.title}</h3>

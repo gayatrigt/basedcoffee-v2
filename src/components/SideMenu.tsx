@@ -10,14 +10,17 @@ import { IoLogInSharp } from "react-icons/io5";
 import { PiSpinnerGap } from "react-icons/pi";
 import { RxAvatar } from "react-icons/rx";
 import { useOnClickOutside } from 'usehooks-ts';
-import { useAccount } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 import { env } from "~/env";
 import { useSidebarStore } from "~/store/sidebarStore";
 import Link from 'next/link';
 import { twMerge } from "tailwind-merge";
 
 const SideBarList: React.FC = ({ }) => {
-    const { address, isDisconnected } = useAccount();
+    const { data, disconnectAsync } = useDisconnect();
+    console.log("args.data", data)
+    const { address, isDisconnected } = useAccount({});
+    console.log("🚀 ~ address:", address)
     const router = useRouter()
     const { close } = useSidebarStore()
 
@@ -42,6 +45,11 @@ const SideBarList: React.FC = ({ }) => {
         router.push('/create');
         close(); // Close the sidebar after redirecting
     };
+
+    const handleDisconnect = () => {
+        disconnectAsync()
+        router.push('/')
+    }
 
     return (
         <div className="bg-white rounded-lg h-full p-4 py-6 flex flex-col">
@@ -79,7 +87,7 @@ const SideBarList: React.FC = ({ }) => {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={handleSupportButton}
-                            className='bg-blue-600 text-white py-2 w-full mt-8 rounded-md'
+                            className='bg-blue-600 text-white py-2 w-full mt-4 rounded-md'
                         >
                             Create a Campaign
                         </motion.button>
@@ -89,7 +97,12 @@ const SideBarList: React.FC = ({ }) => {
             </div>
 
             <div className="grid gap-2">
-                <WalletDropdownDisconnect className="bg-blue-100 rounded-lg font-semibold items-center" />
+                <button
+                    onClick={handleDisconnect}
+                    className='bg-blue-100 text-blue-600 py-2 w-full mt-auto rounded-md'
+                >
+                    Disconnect Wallet
+                </button>
             </div>
 
             {/* <WalletDropdown>
@@ -116,7 +129,7 @@ const MotionLink = motion(Link);
 export const SideMenu: React.FC<{
     overlayColor?: string;
     width?: number;
-}> = ({ overlayColor = "transparent", width = 300 }) => {
+}> = ({ width = 300 }) => {
     const { isOpen, setOpen, toggle, close } = useSidebarStore()
     const controls = useAnimation();
     const { address } = useAccount()
@@ -196,7 +209,7 @@ export const SideMenu: React.FC<{
                         className="border-none bg-transparent absolute top-4 right-0 outline-none"
                     >
                         <div
-                            className="border-2 py-2 px-4 rounded-md bg-white/20 border-slate-600 backdrop-blur-sm text-white hover:border-slate-200 w-full transform translate-x-32 flex items-center space-x-2"
+                            className="border-2 py-2 px-4 rounded-md bg-black/40 border-slate-600 backdrop-blur-sm text-white hover:border-slate-500 w-full transform translate-x-32 flex items-center space-x-2"
                         >
                             <IoLogInSharp /> <span className="text-sm">Login with Wallet</span>
                         </div>
