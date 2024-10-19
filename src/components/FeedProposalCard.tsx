@@ -66,6 +66,7 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
         const handleClickOutside = (event: MouseEvent) => {
             if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
                 setIsExpanded(false);
+                setIsPopupOpen(false);
             }
         };
 
