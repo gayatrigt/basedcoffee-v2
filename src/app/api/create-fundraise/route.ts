@@ -3,7 +3,7 @@ import { db } from '~/server/db';
 
 export async function POST(request: Request) {
     try {
-        const { title, category, description, amount, videoUrl, walletAddress } = await request.json();
+        const { title, category, description, amount, videoUrl, walletAddress, name } = await request.json();
 
         if (!walletAddress) {
             return NextResponse.json({ error: 'Wallet address is required' }, { status: 400 });
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
         if (!user) {
             user = await db.user.create({
-                data: { walletAddress },
+                data: { walletAddress, name },
             });
         }
 

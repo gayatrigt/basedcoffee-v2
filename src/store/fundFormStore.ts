@@ -6,6 +6,7 @@ interface FundFormState {
     selectedCategory: number;
     goalAmount: string;
     title: string;
+    name: string;
     description: string;
     videoUrl: string;
     fundContract?: string;
@@ -13,10 +14,12 @@ interface FundFormState {
     setSelectedCategory: (category: number) => void;
     setGoalAmount: (amount: string) => void;
     setTitle: (title: string) => void;
+    setName: (name: string) => void;
     setDescription: (description: string) => void;
     setVideoUrl: (url: string) => void;
     setFundContract: (contractAddress: string) => void;
     setSavedDetails: (details: Fundraise | null) => void;
+    resetSavedDetails: () => void;
     reset: () => void;
 }
 
@@ -28,6 +31,7 @@ const initialState = {
     description: '',
     savedDetails: null,
     fundContract: undefined,
+    name: ''
 };
 
 export const useFundFormStore = create<FundFormState>()(
@@ -37,10 +41,12 @@ export const useFundFormStore = create<FundFormState>()(
             setSelectedCategory: (category) => set({ selectedCategory: category }),
             setGoalAmount: (amount) => set({ goalAmount: amount }),
             setTitle: (title) => set({ title }),
+            setName: (name) => set({ name }),
             setDescription: (description) => set({ description }),
             setVideoUrl: (url) => set({ videoUrl: url }),
             setSavedDetails: (details) => set({ savedDetails: details }),
             reset: () => set(initialState),
+            resetSavedDetails: () => set({ savedDetails: null }),
             setFundContract: (contractAddress) => set({ fundContract: contractAddress }),
         }),
         {

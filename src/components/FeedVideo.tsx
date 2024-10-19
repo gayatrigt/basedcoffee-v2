@@ -92,13 +92,14 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
     }, [isHolding, inView, playVideo, toggleMute]);
 
     return (
-        <div className="relative w-full h-full">
+        <div className="relative w-auto h-full aspect-auto">
             <video
                 ref={videoRef}
                 src={src}
-                className="w-full h-full object-cover"
+                className="h-full object-cover w-[56.25vh]"
                 loop
                 muted={isMuted}
+
                 playsInline
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}

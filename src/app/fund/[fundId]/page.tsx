@@ -1,5 +1,8 @@
+'use client'
+
 import { NextPage } from 'next';
-import React from 'react';
+import React, { useState } from 'react';
+import { IoLogInSharp } from 'react-icons/io5';
 import ProposalCard from "~/components/FeedProposalCard";
 import { FeedVideo } from '~/components/FeedVideo';
 import { Proposal } from '~/components/FeedWrapper';
@@ -8,6 +11,7 @@ import { getHost } from '~/utils/getHost';
 
 const FeedPage: NextPage<{ params: { fundId: string } }> = async ({ params }) => {
     let parsedFundId = String(params.fundId);
+    const [inViewVideos, setInViewVideos] = useState<Record<string, boolean>>({});
     const proposalRes = await fetch(getHost() + `/api/proposals/${parsedFundId}`).then(res => res.json());
     console.log("🚀 ~ constFeedPage:NextPage<{params:{fundId:string}}>= ~ proposalRes:", proposalRes)
     const proposal: Proposal = proposalRes.proposal;
@@ -42,20 +46,20 @@ const FeedPage: NextPage<{ params: { fundId: string } }> = async ({ params }) =>
                 <div
                     key={proposal.id}
                     id={`video-${proposal.id}`}
-                    className="h-[100dvh] w-full snap-start relative"
+                    className="h-[100dvh] w-full snap-start relative  md:flex items-stretch md:max-w-3xl md:space-x-6 mx-auto"
                 >
                     {proposal.videoUrl && (
                         <FeedVideo
                             src={proposal.videoUrl}
-                            inView
+                            inView={inViewVideos[proposal.id] ?? false}
                         />
                     )}
 
-
                     <ProposalCard
                         proposal={proposal}
+                        inView={inViewVideos[proposal.id] ?? false}
                         secondaryButton={
-                            <ProposalShareButton proposal={proposal} />
+                            <ProposalShareButton proposal={proposal} variant='default' />
                         }
                     />
                 </div>

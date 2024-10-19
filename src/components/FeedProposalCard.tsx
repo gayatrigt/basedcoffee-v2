@@ -3,6 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import SupportButton from './SupportButton';
+import { ChevronUp, ChevronDown } from 'lucide-react';
+// import SupportPopup from './SupportCardView';
+import SupportCardView from './SupportCardView';
 
 interface Creator {
     name: string;
@@ -37,6 +40,7 @@ interface Proposal {
 interface FeedProposalCardProps {
     proposal: Proposal;
     secondaryButton?: React.ReactNode;
+    inView: boolean;
 }
 
 const humanizeNumber = (num?: number): string => {
@@ -49,11 +53,11 @@ const humanizeNumber = (num?: number): string => {
     return num.toString();
 };
 
-
-const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondaryButton }) => {
+const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondaryButton, inView }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
     const progress = (proposal.current / proposal.goal) * 100;
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     console.log("🚀 ~ proposal.deadline:", proposal.deadline)
     const timeLeft = proposal.deadline && formatDistanceToNow(new Date(proposal.deadline), { addSuffix: true });
@@ -81,9 +85,31 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
 
     }
 
+    useEffect(() => {
+        // check the innerWidth
+        if (window.innerWidth > 500 && inView) {
+            setIsExpanded(true)
+        }
+
+        if (!inView) {
+            setIsExpanded(false)
+            setIsPopupOpen(false)
+        }
+    }, [inView])
+
+
+    console.log("🚀 ~ isPopupOpen:", isPopupOpen)
+    if (isPopupOpen) {
+        return <SupportCardView
+            onClose={() => setIsPopupOpen(false)}
+            fundingContractAddress={proposal.contract}
+        />
+    }
+
+
     return (
         <motion.div
-            className="absolute bottom-0 left-0 w-full p-2"
+            className="absolute bottom-0 left-0 w-full md:static flex-1"
             initial={{ y: 0 }}
             // animate={{ y: isExpanded ? -100 : 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -93,7 +119,15 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                 className=" text-white bg-slate-900/30 backdrop-blur-md border-2 border-slate-900/20 p-4 flex flex-col gap-2 pt-8 rounded-lg"
                 onClick={handleCardClick}
             >
-                <h3 className='font-accent text-sm leading-6 tracking-wider mb-2'>{proposal.title}</h3>
+                <div className='flex relative'>
+                    <h3 className='font-accent text-sm leading-6 tracking-wider mb-2'>{proposal.title}</h3>
+                    {!isExpanded && (
+                        <ChevronUp className='absolute right-0 h-6 w-6 text-white' />
+                    )}
+                    {isExpanded && (
+                        <ChevronDown className='absolute right-0 h-6 w-6 text-white' />
+                    )}
+                </div>
 
                 <AnimatePresence>
                     {isExpanded && (
@@ -108,12 +142,12 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                     )}
                 </AnimatePresence>
 
-                <div className='flex  justify-between items-center'>
+                {isExpanded && (<div className='flex  justify-between items-center'>
                     <span className="bg-blue-100/50 text-blue-800 text-xs font-medium mr-2 px-4 py-1 rounded inline-block">
                         {proposal.category}
                     </span>
                     <span className='text-sm text-slate-100 ml-2'>{proposal.backers} backers</span>
-                </div>
+                </div>)}
 
                 <motion.div
                     layout
@@ -129,7 +163,7 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                     </div>
                     <div className="flex justify-between mt-2 text-sm">
                         <span>{humanizeNumber(proposal.current)}</span>
-                        <span>Goal: {humanizeNumber(proposal.goal)}</span>
+                        <span>Goal: {humanizeNumber(proposal.goal)} ETH</span>
                     </div>
                 </motion.div>
 
@@ -154,11 +188,13 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                 </AnimatePresence>
 
                 {secondaryButton && <div className="flex item-start space-x-2">
-                    <SupportButton fundingContractAddress={proposal.contract} />
+                    <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
                     {secondaryButton}
                 </div>}
 
-                {!secondaryButton && <SupportButton fundingContractAddress={proposal.contract} />}
+                {!secondaryButton && <div>
+                    <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
+                </div>}
 
                 {/* <motion.button
                     whileHover={{ scale: 1.1 }}

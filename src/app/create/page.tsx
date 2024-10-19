@@ -29,6 +29,9 @@ const categories: Category[] = [
     { id: 4, name: 'Health' },
     { id: 5, name: 'Environment' },
     { id: 6, name: 'Technology' },
+    { id: 7, name: 'Entertainment' },
+    { id: 8, name: 'Non-profit' },
+    { id: 9, name: 'Product' },
 ];
 
 const formatter = new Intl.NumberFormat('en-IN', {
@@ -48,7 +51,10 @@ const CreatePage = () => {
         description, setDescription,
         savedDetails, setSavedDetails,
         videoUrl, setVideoUrl,
-        fundContract, setFundContract
+        fundContract, setFundContract,
+        name, setName,
+        reset,
+        resetSavedDetails
     } = useFundFormStore()
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -59,6 +65,9 @@ const CreatePage = () => {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [submitMessage, setSubmitMessage] = useState<string>('');
     const [isSuccess, setIsSuccess] = useState<boolean>(true);
+
+    console.log(savedDetails
+    )
 
     // const testVideoUrl = 'https://isrjp0cckdzhlbu3.public.blob.vercel-storage.com/Sequence%2001_2-44E2qc0dlL0JCIbXZ9z7MXA7o6gRv9.mp4'
 
@@ -129,7 +138,8 @@ const CreatePage = () => {
                     description,
                     amount: parseFloat(ethAmount),
                     videoUrl,
-                    walletAddress: address
+                    walletAddress: address,
+                    name
                 }),
             });
 
@@ -217,11 +227,9 @@ const CreatePage = () => {
 
                 const updatedFundraise = await response.json();
 
-                // TODO: uncomment this
                 // setSavedDetails(null);
-
                 setFundContract(projectAddress)
-
+                // reset()
                 console.log('Transaction hash updated successfully');
             } catch (error) {
                 console.error('Error updating transaction hash:', error);
@@ -243,6 +251,23 @@ const CreatePage = () => {
     useEffect(() => {
         convertInrToEth()
     }, [])
+
+    useEffect(() => {
+        // Reset savedDetails when component mounts
+        resetSavedDetails();
+
+        // Cleanup function to reset savedDetails when component unmounts
+        return () => {
+            resetSavedDetails();
+        };
+    }, [resetSavedDetails]);
+
+    useEffect(() => {
+        // Reset entire form state when navigating away from the page
+        return () => {
+            reset();
+        };
+    }, [reset]);
 
     if (isSuccess && savedDetails) {
         return (
@@ -271,7 +296,7 @@ const CreatePage = () => {
 
 
                 </div>
-                <div className='w-full mt-4'>
+                <div className='w-full md:w-1/4 mt-4'>
                     {!fundContract && <Transaction
                         chainId={baseSepolia.id}
                         contracts={getContractArgs()}
@@ -297,7 +322,7 @@ const CreatePage = () => {
                             Checkout your Fundraise
                         </Link>
 
-                        <ProposalShareButton proposal={savedDetails} />
+                        <ProposalShareButton proposal={savedDetails} variant='blue' />
 
                         <button
                             className='border-2 text-base rounded-md bg-white/20 text-blue-600 border-blue-600 font-semibold backdrop-blur-sm hover:border-blue-500 h-12 w-12 flex items-center justify-center text-center'
@@ -312,12 +337,12 @@ const CreatePage = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex h-[100dvh] flex-col items-center justify-center bg-slate-100 p-4">
-            <h1 className="font-accent text-2xl text-blue-600 leading-normal font-bold tracking-wider my-12 mt-24 text-center">
+        <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center bg-slate-100 h-full p-4">
+            <h1 className="font-accent text-2xl text-blue-600 leading-normal font-bold tracking-wider md:my-6 my-12 text-center">
                 CREATE YOUR<br />FUNDRAISE
             </h1>
 
-            <div className='border border-dashed border-blue-700 text-center rounded-lg flex-1 mb-4 w-full flex justify-center items-center py-4'
+            <div className='border border-dashed border-blue-700 text-center rounded-lg flex-1 mb-4 w-full max-w-md space-y-4 flex justify-center items-center py-4'
                 onClick={() => fileInputRef.current?.click()}>
                 <h2 className="text-base text-gray-600"> {video ? video.name : 'Upload a 2 minute video pitch'}</h2>
                 <input
@@ -326,6 +351,17 @@ const CreatePage = () => {
                     onChange={handleFileChange}
                     accept="video/*"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hidden"
+                />
+            </div>
+
+            <div className='w-full max-w-md space-y-4 pb-2'>
+                <h2 className="text-base text-gray-600">Your Name</h2>
+                <input
+                    type="text"
+                    placeholder="Name of Creator"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
 
