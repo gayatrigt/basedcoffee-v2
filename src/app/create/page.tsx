@@ -29,6 +29,9 @@ const categories: Category[] = [
     { id: 4, name: 'Health' },
     { id: 5, name: 'Environment' },
     { id: 6, name: 'Technology' },
+    { id: 7, name: 'Entertainment' },
+    { id: 8, name: 'Non-profit' },
+    { id: 9, name: 'Product' },
 ];
 
 const formatter = new Intl.NumberFormat('en-IN', {

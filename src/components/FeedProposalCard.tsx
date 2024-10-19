@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import SupportButton from './SupportButton';
 import { ChevronUp, ChevronDown } from 'lucide-react';
+import SupportPopup from './SupportPopup';
 
 interface Creator {
     name: string;
@@ -50,11 +51,11 @@ const humanizeNumber = (num?: number): string => {
     return num.toString();
 };
 
-
 const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondaryButton }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
     const progress = (proposal.current / proposal.goal) * 100;
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     console.log("🚀 ~ proposal.deadline:", proposal.deadline)
     const timeLeft = proposal.deadline && formatDistanceToNow(new Date(proposal.deadline), { addSuffix: true });
@@ -104,7 +105,6 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                         <ChevronDown className='absolute right-0 h-6 w-6 text-white' />
                     )}
                 </div>
-
 
                 <AnimatePresence>
                     {isExpanded && (
@@ -165,11 +165,17 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                 </AnimatePresence>
 
                 {secondaryButton && <div className="flex item-start space-x-2">
-                    <SupportButton fundingContractAddress={proposal.contract} />
-                    {secondaryButton}
+                    <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
                 </div>}
 
-                {!secondaryButton && <SupportButton fundingContractAddress={proposal.contract} />}
+                {!secondaryButton && <div>
+                    <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
+                    <SupportPopup
+                        isOpen={isPopupOpen}
+                        onClose={() => setIsPopupOpen(false)}
+                        fundingContractAddress={proposal.contract}
+                    />
+                </div>}
 
                 {/* <motion.button
                     whileHover={{ scale: 1.1 }}

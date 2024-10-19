@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import ProposalCard from './FeedProposalCard';
 import { FeedVideo } from './FeedVideo';
 import Link from "next/link"
+import SupportPopup from './SupportPopup';
 
 interface Creator {
     name: string;
@@ -38,6 +39,7 @@ const FeedWrapper = () => {
     const [inViewVideos, setInViewVideos] = useState<Record<string, boolean>>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     const fetchProposals = async () => {
         try {
@@ -120,6 +122,11 @@ const FeedWrapper = () => {
                     )}
 
                     <ProposalCard proposal={proposal} />
+                    <SupportPopup
+                        isOpen={isPopupOpen}
+                        onClose={() => setIsPopupOpen(false)}
+                        fundingContractAddress={proposal.contract}
+                    />
                 </div>
             ))}
         </div>
