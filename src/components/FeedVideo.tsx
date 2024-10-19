@@ -15,7 +15,7 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
     const [isHolding, setIsHolding] = useState<boolean>(false);
     const holdTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const playVideo = useCallback(async () => {
+    const playVideo = async () => {
         if (videoRef.current) {
             try {
                 await videoRef.current.play();
@@ -26,7 +26,7 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
                 console.error("Error playing video:", error);
             }
         }
-    }, []);
+    }
 
     const pauseVideo = useCallback(async () => {
         if (videoRef.current) {
@@ -47,21 +47,6 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
         }
     }, [inView, isHolding, playVideo, pauseVideo]);
 
-    const handleVisibilityChange = () => {
-        if (document.hidden) {
-            void pauseVideo();
-        } else if (inView && !isHolding) {
-            void playVideo();
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-        return () => {
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-        };
-    }, [inView, isHolding, playVideo, pauseVideo]);
-
     const handleTouchStart = useCallback(() => {
         holdTimeoutRef.current = setTimeout(() => {
             setIsHolding(true);
@@ -78,8 +63,6 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
             if (inView) {
                 void playVideo();
             }
-        } else {
-            toggleMute();
         }
     }, [isHolding, inView, playVideo, toggleMute]);
 
