@@ -20,9 +20,11 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
             try {
                 await videoRef.current.play();
 
-                // un-mute if video is playing
-                videoRef.current.muted = false; // un-mute if video is playing  
-                setMuted(false)
+                if (!isMuted) {
+                    // un-mute if video is playing
+                    videoRef.current.muted = false; // un-mute if video is playing  
+                }
+
                 setIsPlaying(true);
             } catch (error) {
                 console.error("Error playing video:", error);
