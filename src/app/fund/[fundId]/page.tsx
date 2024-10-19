@@ -30,6 +30,7 @@ const FeedPage: NextPage<{ params: { fundId: string } }> = async ({ params }) =>
                 >
                     {proposal.videoUrl && (
                         <FeedVideo
+                            proposal={proposal}
                             src={proposal.videoUrl}
                             inView={true}
                         />

@@ -1,14 +1,17 @@
 "use client";
-import { Pause, Play, VolumeX, Volume2 } from "lucide-react";
+import { Pause, Play, VolumeX, Volume2, Share2 } from "lucide-react";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useMutedStore } from "~/store/muteStore";
+import { Proposal } from "~/components/FeedWrapper";
+import { getHost } from "~/utils/getHost";
 
 interface FeedVideoProps {
     src: string;
     inView: boolean;
+    proposal: Proposal;
 }
 
-export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
+export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView, proposal }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const { isMuted, toggleMute } = useMutedStore();
@@ -75,6 +78,23 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
         }
     }, [isPlaying, pauseVideo, playVideo]);
 
+    const handleShare = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: proposal.title,
+                    url: getHost() + `/fund/${proposal.id}`,
+                });
+                console.log('Content shared successfully');
+            } catch (error) {
+                console.log('Error sharing content:', error);
+            }
+        } else {
+            console.log('Web Share API not supported');
+            // Fallback behavior here (e.g., copy to clipboard)
+        }
+    };
+
     return (
         <div className="relative w-auto h-full aspect-auto">
             <video
@@ -83,7 +103,6 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
                 className="h-full object-cover w-[56.25vh] mx-auto"
                 loop
                 muted={isMuted}
-
                 playsInline
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
@@ -94,6 +113,9 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
                 </button>
                 <button onClick={toggleMute} className="p-2 bg-black bg-opacity-50 rounded-full text-white aspect-square">
                     {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                </button>
+                <button onClick={handleShare} className="p-2 bg-black bg-opacity-50 rounded-full text-white aspect-square">
+                    <Share2 size={24} />
                 </button>
             </div>
         </div>

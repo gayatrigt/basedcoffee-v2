@@ -62,13 +62,15 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
     console.log("🚀 ~ proposal.deadline:", proposal.deadline)
     const timeLeft = proposal.deadline && formatDistanceToNow(new Date(proposal.deadline), { addSuffix: true });
 
+    const handleClickOutside = (event: MouseEvent) => {
+        console.log("🚀 ~ handleClickOutside ~ handleClickOutside:", handleClickOutside)
+        if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
+            setIsPopupOpen(false);
+            setIsExpanded(false);
+        }
+    };
+
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
-                setIsExpanded(false);
-                setIsPopupOpen(false);
-            }
-        };
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
@@ -96,116 +98,113 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
         }
     }, [inView])
 
-
-    if (isPopupOpen) {
-        return <SupportCardView
-            onClose={() => setIsPopupOpen(false)}
-            fundingContractAddress={proposal.contract}
-        />
-    }
-
-
     return (
         <motion.div
             className="absolute bottom-0 left-0 w-full md:static flex-1"
             initial={{ y: 0 }}
-            // animate={{ y: isExpanded ? -100 : 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
         >
             <motion.div
                 ref={cardRef}
-                className=" text-white bg-slate-900/30 backdrop-blur-md border-2 border-slate-900/20 p-4 flex flex-col gap-2 pt-8 rounded-lg"
+                className=" text-white bg-slate-900/30 backdrop-blur-md border-2 border-slate-900/20 p-4 pt-8 rounded-lg"
                 onClick={handleCardClick}
             >
-                <div className='flex relative'>
-                    <h3 className='font-accent text-sm leading-6 tracking-wider mb-2'>{proposal.title}</h3>
-                    {!isExpanded && (
-                        <ChevronUp className='absolute right-0 h-6 w-6 text-white' />
-                    )}
-                    {isExpanded && (
-                        <ChevronDown className='absolute right-0 h-6 w-6 text-white md:hidden block' />
-                    )}
-                </div>
 
-                <AnimatePresence>
-                    {isExpanded && (
-                        <motion.p
-                            className='text-sm text-slate-300 mb-2'
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                        >
-                            {proposal.description}
-                        </motion.p>
-                    )}
-                </AnimatePresence>
+                {!!isPopupOpen && <SupportCardView
+                    onClose={() => setIsPopupOpen(false)}
+                    fundingContractAddress={proposal.contract}
+                />}
 
-                {isExpanded && (<div className='flex  justify-between items-center'>
-                    <span className="bg-blue-100/50 text-blue-800 text-xs font-medium mr-2 px-4 py-1 rounded inline-block">
-                        {proposal.category}
-                    </span>
-                    <span className='text-sm text-slate-100 ml-2'>{proposal.backers} backers</span>
-                </div>)}
-
-                <motion.div
-                    layout
-                >
-                    <div className="flex item-start space-x-4">
-                        <div className='flex-1'>
-                            <div className="w-full bg-gray-200/50 rounded-full h-2.5">
-                                <motion.div
-                                    className="bg-blue-600 h-2.5 rounded-full"
-                                    style={{ width: `${progress}%` }}
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${progress}%` }}
-                                    transition={{ duration: 0.5 }}
-                                />
-                            </div>
-                            <div className="flex justify-between mt-2 text-sm">
-                                <span>{humanizeNumber(proposal.current)}</span>
-                                <span>Goal: {humanizeNumber(proposal.goal)} ETH</span>
-                            </div>
-                        </div>
-
-                        {/* shrink by widh as they exit */}
-                        {!isExpanded && <motion.button
-                            onClick={() => setIsPopupOpen(true)}
-                            className="aspect-square bg-blue-600 text-white p-2 rounded-md">
-                            <CiCoffeeBean className='w-6 h-6' />
-                        </motion.button>}
+                {!isPopupOpen && <div className='flex flex-col gap-2'>
+                    <div className='flex relative'>
+                        <h3 className='font-accent text-sm leading-6 tracking-wider mb-2'>{proposal.title}</h3>
+                        {!isExpanded && (
+                            <ChevronUp className='absolute right-0 h-6 w-6 text-white' />
+                        )}
+                        {isExpanded && (
+                            <ChevronDown className='absolute right-0 h-6 w-6 text-white md:hidden block' />
+                        )}
                     </div>
-                </motion.div>
 
-                <AnimatePresence>
-                    {isExpanded && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                        >
-                            <div className="flex justify-between items-center text-sm mt-2">
-                                <div className="flex items-center text-sm text-white">
-                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
-                                    </svg>
-                                    <span className='text-white translate-y-[1px]'>{proposal.creator.name}</span>
+                    <AnimatePresence>
+                        {isExpanded && (
+                            <motion.p
+                                className='text-sm text-slate-300 mb-2'
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                            >
+                                {proposal.description}
+                            </motion.p>
+                        )}
+                    </AnimatePresence>
+
+                    {isExpanded && (<div className='flex  justify-between items-center'>
+                        <span className="bg-blue-100/50 text-blue-800 text-xs font-medium mr-2 px-4 py-1 rounded inline-block">
+                            {proposal.category}
+                        </span>
+                        <span className='text-sm text-slate-100 ml-2'>{proposal.backers} backers</span>
+                    </div>)}
+
+                    <motion.div
+                        layout
+                    >
+                        <div className="flex item-start space-x-4">
+                            <div className='flex-1'>
+                                <div className="w-full bg-gray-200/50 rounded-full h-2.5">
+                                    <motion.div
+                                        className="bg-blue-600 h-2.5 rounded-full"
+                                        style={{ width: `${progress}%` }}
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${progress}%` }}
+                                        transition={{ duration: 0.5 }}
+                                    />
                                 </div>
-                                <span>Ends {timeLeft}</span>
+                                <div className="flex justify-between mt-2 text-sm">
+                                    <span>{humanizeNumber(proposal.current)}</span>
+                                    <span>Goal: {humanizeNumber(proposal.goal)} ETH</span>
+                                </div>
                             </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
 
-                {secondaryButton && <div className="flex item-start space-x-2">
-                    <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
-                    {secondaryButton}
-                </div>}
+                            {/* shrink by widh as they exit */}
+                            {!isExpanded && <motion.button
+                                onClick={() => setIsPopupOpen(true)}
+                                className="aspect-square bg-blue-600 text-white p-2 rounded-md">
+                                <CiCoffeeBean className='w-6 h-6' />
+                            </motion.button>}
+                        </div>
+                    </motion.div>
 
-                {!secondaryButton && isExpanded && <div>
-                    <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
-                </div>}
+                    <AnimatePresence>
+                        {isExpanded && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                            >
+                                <div className="flex justify-between items-center text-sm mt-2">
+                                    <div className="flex items-center text-sm text-white">
+                                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                                        </svg>
+                                        <span className='text-white translate-y-[1px]'>{proposal.creator.name}</span>
+                                    </div>
+                                    <span>Ends {timeLeft}</span>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-                {/* <motion.button
+                    {secondaryButton && <div className="flex item-start space-x-2">
+                        <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
+                        {secondaryButton}
+                    </div>}
+
+                    {!secondaryButton && isExpanded && <div>
+                        <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
+                    </div>}
+
+                    {/* <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={handleSupportButton}
@@ -213,6 +212,7 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                 >
                     Send a Cofffee
                 </motion.button> */}
+                </div>}
             </motion.div>
         </motion.div >
     );

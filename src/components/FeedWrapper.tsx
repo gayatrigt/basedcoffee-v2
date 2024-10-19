@@ -116,6 +116,7 @@ const FeedWrapper = () => {
                 >
                     {proposal.videoUrl && (
                         <FeedVideo
+                            proposal={proposal}
                             src={proposal.videoUrl}
                             inView={inViewVideos[proposal.id] ?? false}
                         />

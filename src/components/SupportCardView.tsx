@@ -69,49 +69,43 @@ const SupportCardView: React.FC<SupportCardViewProps> = ({ onClose, fundingContr
     }, [address, fundingContractAddress, amount]);
 
     return (
-        <div
-            className="absolute bottom-0 left-0 w-full md:static flex-1"
-        >
-            <div
-                className=" text-white bg-slate-900/30 backdrop-blur-md border-t-2 border-slate-900/20 p-2 pt-4 md:pt-8 md:max-w-lg md:border-2 mx-auto rounded-none md:rounded-md"
+        <>
+            <button
+                onClick={onClose}
+                className="text-gray-200 hover:text-gray-200 py-1 mb-6 flex items-center space-x-2 px-2 pr-4 rounded-md bg-white/20"
             >
-                <button
-                    onClick={onClose}
-                    className="text-gray-200 hover:text-gray-200 py-1 mb-6 flex items-center space-x-2 px-2 pr-4 rounded-md bg-white/20"
-                >
-                    <ChevronLeft className='h-6 w-6' />
-                    <span className='mt-1'>Back</span>
-                </button>
-                <h2 className="text-lg font-semibold mb-4 font-accent text-white uppercase">How many coffees?</h2>
-                <div className="mb-4">
-                    <label htmlFor="amount" className="block mb-2 text-gray-200">
-                        Amount (ETH):
-                    </label>
-                    <input
-                        id="amount"
-                        type="text"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-slate-800"
-                    />
-                </div>
-                <Transaction
-                    chainId={baseSepolia.id}
-                    calls={calls}
-                    onStatus={handleOnStatus}
-                >
-                    <TransactionButton
-                        className="bg-blue-600 text-white py-2 w-full rounded-md font-semibold"
-                        text="Buy Coffee"
-                    />
-                    <TransactionSponsor />
-                    <TransactionStatus className="text-black mt-2">
-                        <TransactionStatusLabel className="text-black/80 [&_p]:!text-black" />
-                        <TransactionStatusAction className="text-black/80" />
-                    </TransactionStatus>
-                </Transaction>
+                <ChevronLeft className='h-6 w-6' />
+                <span className='mt-1'>Back</span>
+            </button>
+            <h2 className="text-lg font-semibold mb-4 font-accent text-white uppercase">How many coffees?</h2>
+            <div className="mb-4">
+                <label htmlFor="amount" className="block mb-2 text-gray-200">
+                    Amount (ETH):
+                </label>
+                <input
+                    id="amount"
+                    type="text"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-slate-800"
+                />
             </div>
-        </div>
+            <Transaction
+                chainId={baseSepolia.id}
+                calls={calls}
+                onStatus={handleOnStatus}
+            >
+                <TransactionButton
+                    className="bg-blue-600 text-white py-2 w-full rounded-md font-semibold"
+                    text="Buy Coffee"
+                />
+                <TransactionSponsor />
+                <TransactionStatus className="text-black mt-2">
+                    <TransactionStatusLabel className="text-black/80 [&_p]:!text-black" />
+                    <TransactionStatusAction className="text-black/80" />
+                </TransactionStatus>
+            </Transaction>
+        </>
     );
 };
 

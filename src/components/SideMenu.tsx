@@ -4,23 +4,20 @@ import React, { useEffect, useRef } from "react";
 
 import { FundButton, getOnrampBuyUrl } from '@coinbase/onchainkit/fund';
 import { Avatar, EthBalance, Identity, Name } from "@coinbase/onchainkit/identity";
-import { WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet";
+import Link from 'next/link';
 import { usePathname, useRouter } from "next/navigation";
 import { IoLogInSharp } from "react-icons/io5";
 import { PiSpinnerGap } from "react-icons/pi";
 import { RxAvatar } from "react-icons/rx";
+import { twMerge } from "tailwind-merge";
 import { useOnClickOutside } from 'usehooks-ts';
 import { useAccount, useDisconnect } from "wagmi";
 import { env } from "~/env";
 import { useSidebarStore } from "~/store/sidebarStore";
-import Link from 'next/link';
-import { twMerge } from "tailwind-merge";
 
 const SideBarList: React.FC = ({ }) => {
     const { data, disconnectAsync } = useDisconnect();
-    console.log("args.data", data)
     const { address, isDisconnected } = useAccount({});
-    console.log("🚀 ~ address:", address)
     const router = useRouter()
     const { close } = useSidebarStore()
 
