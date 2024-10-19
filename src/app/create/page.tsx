@@ -296,7 +296,7 @@ const CreatePage = () => {
 
 
                 </div>
-                <div className='w-full mt-4'>
+                <div className='w-full md:w-1/4 mt-4'>
                     {!fundContract && <Transaction
                         chainId={baseSepolia.id}
                         contracts={getContractArgs()}
@@ -337,12 +337,12 @@ const CreatePage = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex h-[100dvh] flex-col items-center justify-center bg-slate-100 p-4">
-            <h1 className="font-accent text-2xl text-blue-600 leading-normal font-bold tracking-wider my-12 mt-24 text-center">
+        <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center bg-slate-100 h-full p-4">
+            <h1 className="font-accent text-2xl text-blue-600 leading-normal font-bold tracking-wider md:my-6 my-12 text-center">
                 CREATE YOUR<br />FUNDRAISE
             </h1>
 
-            <div className='border border-dashed border-blue-700 text-center rounded-lg flex-1 mb-4 w-full flex justify-center items-center py-4'
+            <div className='border border-dashed border-blue-700 text-center rounded-lg flex-1 mb-4 w-full max-w-md space-y-4 flex justify-center items-center py-4'
                 onClick={() => fileInputRef.current?.click()}>
                 <h2 className="text-base text-gray-600"> {video ? video.name : 'Upload a 2 minute video pitch'}</h2>
                 <input
@@ -354,11 +354,11 @@ const CreatePage = () => {
                 />
             </div>
 
-            <div className='w-full pb-4'>
-                <h2 className="text-base text-gray-600">Name</h2>
+            <div className='w-full max-w-md space-y-4 pb-2'>
+                <h2 className="text-base text-gray-600">Your Name</h2>
                 <input
                     type="text"
-                    placeholder="Your Name"
+                    placeholder="Name of Creator"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
