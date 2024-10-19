@@ -2,7 +2,7 @@
     "name": "BasedCoffee",
     "short_name": "BasedCoffee",
     "description": "Fund Ideas, Fuel Creators - Connect raw talent with real support",
-    "start_url": "/",
+    "start_url": "/feed",
     "display": "standalone",
     "background_color": "#0f172a",
     "theme_color": "#0f172a",
