@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   title: "BasedCoffee",
   description: "Fund Creators, Fuel Dreams",
   icons: [{ rel: "icon", url: "/favicon.png" }],
+  manifest: '/manifest.json',
+  themeColor: '#000000',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 };
 
 
