@@ -83,6 +83,15 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
         }
     }, [isHolding, inView, playVideo, toggleMute]);
 
+
+    const togglePlay = useCallback(async () => {
+        if (isPlaying) {
+            await pauseVideo();
+        } else {
+            await playVideo();
+        }
+    }, [isPlaying, pauseVideo, playVideo]);
+
     return (
         <div className="relative w-auto h-full aspect-auto">
             <video
@@ -96,14 +105,14 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
             />
-            {/* <div className="absolute top-4 right-4 flex flex-col space-y-2">
+            <div className="absolute top-4 right-4 flex flex-col space-y-2">
                 <button onClick={() => void togglePlay()} className="p-2 bg-black bg-opacity-50 rounded-full text-white aspect-square">
                     {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                 </button>
                 <button onClick={toggleMute} className="p-2 bg-black bg-opacity-50 rounded-full text-white aspect-square">
                     {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
                 </button>
-            </div> */}
+            </div>
         </div>
     );
 };
