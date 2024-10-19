@@ -36,6 +36,7 @@ interface Proposal {
 
 interface FeedProposalCardProps {
     proposal: Proposal;
+    secondaryButton?: React.ReactNode;
 }
 
 const humanizeNumber = (num?: number): string => {
@@ -49,7 +50,7 @@ const humanizeNumber = (num?: number): string => {
 };
 
 
-const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
+const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondaryButton }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
     const progress = (proposal.current / proposal.goal) * 100;
@@ -79,8 +80,6 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
         e.stopPropagation();
 
     }
-
-    const inr = Number(proposal.goalINR)
 
     return (
         <motion.div
@@ -147,7 +146,7 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                                     <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
                                     </svg>
-                                    <span className='text-white'>{proposal.creator.name}</span>
+                                    <span className='text-white translate-y-[1px]'>{proposal.creator.name}</span>
                                 </div>
                                 <span>Ends {timeLeft}</span>
                             </div>
@@ -155,7 +154,12 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal }) => {
                     )}
                 </AnimatePresence>
 
-                <SupportButton fundingContractAddress={proposal.contract} />
+                {secondaryButton && <div className="flex item-start space-x-2">
+                    <SupportButton fundingContractAddress={proposal.contract} />
+                    {secondaryButton}
+                </div>}
+
+                {!secondaryButton && <SupportButton fundingContractAddress={proposal.contract} />}
 
                 {/* <motion.button
                     whileHover={{ scale: 1.1 }}

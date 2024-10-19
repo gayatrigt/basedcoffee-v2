@@ -14,6 +14,8 @@ import { abi } from '~/abi/abi';
 import { useFundFormStore } from '~/store/fundFormStore';
 import { decodeProjectCreatedEvent } from '~/utils/decodeProjectCreatedEvent';
 import { IoCopyOutline } from "react-icons/io5";
+import { getHost } from '~/utils/getHost';
+import ProposalShareButton from '~/components/ProposalShareButton';
 
 interface Category {
     id: number;
@@ -227,27 +229,10 @@ const CreatePage = () => {
         }
     }
 
-    const handleShare = async () => {
-        if (navigator.share && savedDetails) {
-            try {
-                await navigator.share({
-                    title,
-                    url: `/fund/${savedDetails.id}`,
-                });
-                console.log('Content shared successfully');
-            } catch (error) {
-                console.log('Error sharing content:', error);
-            }
-        } else {
-            console.log('Web Share API not supported');
-            // Fallback behavior here (e.g., copy to clipboard)
-        }
-    };
-
     const handleCopy = async () => {
         try {
             if (!savedDetails) { return; }
-            await navigator.clipboard.writeText(`/fund/${savedDetails.id}`);
+            await navigator.clipboard.writeText(getHost() + `/fund/${savedDetails.id}`);
 
             alert('Link copied to clipboard');
         } catch (err) {
@@ -308,16 +293,11 @@ const CreatePage = () => {
                         {/* make this a secondary */}
                         <Link
                             className="bg-blue-600 text-white p-2 rounded-md font-semibold flex items-center justify-center flex-1"
-                            href={`/fund/${savedDetails.id}`}>
+                            href={getHost() + `/fund/${savedDetails.id}`}>
                             Checkout your Fundraise
                         </Link>
 
-                        <button
-                            className='border-2 text-base rounded-md bg-white/20 text-blue-600 border-blue-600 font-semibold backdrop-blur-sm hover:border-blue-500 h-12 w-12 flex items-center justify-center text-center'
-                            onClick={handleShare}
-                        >
-                            <CiShare1 stroke="8" className="h-5 w-5 stroke-blue-600 stroke-1" />
-                        </button>
+                        <ProposalShareButton proposal={savedDetails} />
 
                         <button
                             className='border-2 text-base rounded-md bg-white/20 text-blue-600 border-blue-600 font-semibold backdrop-blur-sm hover:border-blue-500 h-12 w-12 flex items-center justify-center text-center'

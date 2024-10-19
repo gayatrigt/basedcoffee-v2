@@ -14,7 +14,7 @@ interface Link {
     value: string
 }
 
-interface Proposal {
+export interface Proposal {
     id: string;
     title: string;
     category: string;

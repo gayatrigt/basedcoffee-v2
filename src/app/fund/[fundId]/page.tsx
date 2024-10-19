@@ -2,14 +2,32 @@ import { NextPage } from 'next';
 import React from 'react';
 import ProposalCard from "~/components/FeedProposalCard";
 import { FeedVideo } from '~/components/FeedVideo';
-import { db } from '~/server/db';
-
-
+import { Proposal } from '~/components/FeedWrapper';
+import ProposalShareButton from '~/components/ProposalShareButton';
+import { getHost } from '~/utils/getHost';
 
 const FeedPage: NextPage<{ params: { fundId: string } }> = async ({ params }) => {
     let parsedFundId = String(params.fundId);
-    const proposal = await db.fundraise.findFirst({ where: { id: parsedFundId } });
-    console.log("🚀 ~ constFeedPage:NextPage<{params:{fundId:string}}>= ~ proposal:", proposal)
+    const proposalRes = await fetch(getHost() + `/api/proposals/${parsedFundId}`).then(res => res.json());
+    console.log("🚀 ~ constFeedPage:NextPage<{params:{fundId:string}}>= ~ proposalRes:", proposalRes)
+    const proposal: Proposal = proposalRes.proposal;
+
+    const handleShare = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: proposal.title,
+                    url: getHost() + `/fund/${proposal.id}`,
+                });
+                console.log('Content shared successfully');
+            } catch (error) {
+                console.log('Error sharing content:', error);
+            }
+        } else {
+            console.log('Web Share API not supported');
+            // Fallback behavior here (e.g., copy to clipboard)
+        }
+    };
 
     // redirec to 404
     if (!proposal) {
@@ -33,7 +51,13 @@ const FeedPage: NextPage<{ params: { fundId: string } }> = async ({ params }) =>
                         />
                     )}
 
-                    <ProposalCard proposal={proposal} />
+
+                    <ProposalCard
+                        proposal={proposal}
+                        secondaryButton={
+                            <ProposalShareButton proposal={proposal} />
+                        }
+                    />
                 </div>
             </div>
         </main>
