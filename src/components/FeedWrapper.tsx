@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import ProposalCard from './FeedProposalCard';
 import { FeedVideo } from './FeedVideo';
 import Link from "next/link"
-import SupportPopup from './SupportPopup';
+import SupportPopup from './SupportCardView';
 
 interface Creator {
     name: string;
@@ -112,7 +112,7 @@ const FeedWrapper = () => {
                 <div
                     key={proposal.id}
                     id={`video-${proposal.id}`}
-                    className="h-[100dvh] w-full snap-start relative"
+                    className="h-[100dvh] w-full snap-start relative md:flex items-stretch md:max-w-3xl md:space-x-6 mx-auto"
                 >
                     {proposal.videoUrl && (
                         <FeedVideo
@@ -121,11 +121,9 @@ const FeedWrapper = () => {
                         />
                     )}
 
-                    <ProposalCard proposal={proposal} />
-                    <SupportPopup
-                        isOpen={isPopupOpen}
-                        onClose={() => setIsPopupOpen(false)}
-                        fundingContractAddress={proposal.contract}
+                    <ProposalCard
+                        inView={inViewVideos[proposal.id] ?? false}
+                        proposal={proposal}
                     />
                 </div>
             ))}

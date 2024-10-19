@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import SupportButton from './SupportButton';
 import { ChevronUp, ChevronDown } from 'lucide-react';
-import SupportPopup from './SupportPopup';
+// import SupportPopup from './SupportCardView';
+import SupportCardView from './SupportCardView';
 
 interface Creator {
     name: string;
@@ -39,6 +40,7 @@ interface Proposal {
 interface FeedProposalCardProps {
     proposal: Proposal;
     secondaryButton?: React.ReactNode;
+    inView: boolean;
 }
 
 const humanizeNumber = (num?: number): string => {
@@ -51,7 +53,7 @@ const humanizeNumber = (num?: number): string => {
     return num.toString();
 };
 
-const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondaryButton }) => {
+const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondaryButton, inView }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
     const progress = (proposal.current / proposal.goal) * 100;
@@ -83,16 +85,38 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
 
     }
 
+    useEffect(() => {
+        // check the innerWidth
+        if (window.innerWidth > 500 && inView) {
+            setIsExpanded(true)
+        }
+
+        if (!inView) {
+            setIsExpanded(false)
+            setIsPopupOpen(false)
+        }
+    }, [inView])
+
+
+    console.log("🚀 ~ isPopupOpen:", isPopupOpen)
+    if (isPopupOpen) {
+        return <SupportCardView
+            onClose={() => setIsPopupOpen(false)}
+            fundingContractAddress={proposal.contract}
+        />
+    }
+
+
     return (
         <motion.div
-            className="absolute bottom-0 left-0 w-full"
+            className="absolute bottom-0 left-0 w-full md:static flex-1"
             initial={{ y: 0 }}
             // animate={{ y: isExpanded ? -100 : 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
         >
             <motion.div
                 ref={cardRef}
-                className=" text-white bg-slate-900/30 backdrop-blur-md border-2 border-slate-900/20 p-2 flex flex-col gap-2 pt-4 rounded-lg"
+                className=" text-white bg-slate-900/30 backdrop-blur-md border-t-2 border-slate-900/20 p-2 flex flex-col gap-2 pt-4 md:pt-8 md:max-w-lg md:border-2 mx-auto rounded-none md:rounded-md"
                 whileHover={{ scale: 1.02 }}
                 onClick={handleCardClick}
             >
@@ -166,15 +190,11 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
 
                 {secondaryButton && <div className="flex item-start space-x-2">
                     <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
+                    {secondaryButton}
                 </div>}
 
                 {!secondaryButton && <div>
                     <SupportButton onOpenPopup={() => setIsPopupOpen(true)} />
-                    <SupportPopup
-                        isOpen={isPopupOpen}
-                        onClose={() => setIsPopupOpen(false)}
-                        fundingContractAddress={proposal.contract}
-                    />
                 </div>}
 
                 {/* <motion.button

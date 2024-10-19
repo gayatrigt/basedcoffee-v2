@@ -12,14 +12,14 @@ import { baseSepolia } from 'viem/chains';
 import CROWDFUNDING_PROJECT_ABI from "../abi/CrowdFundingProject.json";
 import { encodeFunctionData, Hex, parseEther } from 'viem';
 import { useAccount } from 'wagmi';
+import { ChevronLeft } from 'lucide-react';
 
-interface SupportPopupProps {
-    isOpen: boolean;
+interface SupportCardViewProps {
     onClose: () => void;
     fundingContractAddress?: string;
 }
 
-const SupportPopup: React.FC<SupportPopupProps> = ({ isOpen, onClose, fundingContractAddress }) => {
+const SupportCardView: React.FC<SupportCardViewProps> = ({ onClose, fundingContractAddress }) => {
     const { address } = useAccount();
     const [amount, setAmount] = useState('0.0001');
 
@@ -68,21 +68,23 @@ const SupportPopup: React.FC<SupportPopupProps> = ({ isOpen, onClose, fundingCon
         }
     }, [address, fundingContractAddress, amount]);
 
-    if (!isOpen) return null;
-
     return (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-            <div className="bg-white rounded-lg p-6 w-full max-w-md relative z-10">
+        <div
+            className="absolute bottom-0 left-0 w-full md:static flex-1"
+        >
+            <div
+                className=" text-white bg-slate-900/30 backdrop-blur-md border-t-2 border-slate-900/20 p-2 pt-4 md:pt-8 md:max-w-lg md:border-2 mx-auto rounded-none md:rounded-md"
+            >
                 <button
                     onClick={onClose}
-                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                    className="text-gray-200 hover:text-gray-200 py-1 mb-6 flex items-center space-x-2 px-2 pr-4 rounded-md bg-white/20"
                 >
-                    ×
+                    <ChevronLeft className='h-6 w-6' />
+                    <span className='mt-1'>Back</span>
                 </button>
-                <h2 className="text-lg font-semibold mb-4 font-accent text-blue-600 uppercase">How many coffees?</h2>
+                <h2 className="text-lg font-semibold mb-4 font-accent text-white uppercase">How many coffees?</h2>
                 <div className="mb-4">
-                    <label htmlFor="amount" className="block mb-2 text-gray-600">
+                    <label htmlFor="amount" className="block mb-2 text-gray-200">
                         Amount (ETH):
                     </label>
                     <input
@@ -113,4 +115,4 @@ const SupportPopup: React.FC<SupportPopupProps> = ({ isOpen, onClose, fundingCon
     );
 };
 
-export default SupportPopup;
+export default SupportCardView;
