@@ -11,7 +11,7 @@ interface FeedVideoProps {
 export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const { isMuted, toggleMute, setMuted } = useMutedStore();
+    const { isMuted, toggleMute } = useMutedStore();
     const [isHolding, setIsHolding] = useState<boolean>(false);
     const holdTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 

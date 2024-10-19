@@ -10,7 +10,7 @@ interface MutedState {
 export const useMutedStore = create<MutedState>()(
     persist(
         (set) => ({
-            isMuted: true, // Start muted by default
+            isMuted: false, // Start muted by default
             toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
             setMuted: (isMuted: boolean) => set({ isMuted })
         }),
