@@ -1,12 +1,12 @@
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 import SupportButton from './SupportButton';
-import { ChevronUp, ChevronDown } from 'lucide-react';
 // import SupportPopup from './SupportCardView';
+import { CiCoffeeBean } from "react-icons/ci";
 import SupportCardView from './SupportCardView';
-
 interface Creator {
     name: string;
     wallet: string;
@@ -76,14 +76,12 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
     }, []);
 
     const handleCardClick = (event: React.MouseEvent) => {
-        event.stopPropagation();
-        setIsExpanded(!isExpanded);
+        if (window.innerWidth < 500 && inView) {
+            event.stopPropagation();
+            setIsExpanded(!isExpanded);
+        }
+
     };
-
-    const handleSupportButton: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-        e.stopPropagation();
-
-    }
 
     useEffect(() => {
         // check the innerWidth
@@ -98,7 +96,6 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
     }, [inView])
 
 
-    console.log("🚀 ~ isPopupOpen:", isPopupOpen)
     if (isPopupOpen) {
         return <SupportCardView
             onClose={() => setIsPopupOpen(false)}
@@ -125,7 +122,7 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                         <ChevronUp className='absolute right-0 h-6 w-6 text-white' />
                     )}
                     {isExpanded && (
-                        <ChevronDown className='absolute right-0 h-6 w-6 text-white' />
+                        <ChevronDown className='absolute right-0 h-6 w-6 text-white md:hidden block' />
                     )}
                 </div>
 
@@ -152,18 +149,29 @@ const FeedProposalCard: React.FC<FeedProposalCardProps> = ({ proposal, secondary
                 <motion.div
                     layout
                 >
-                    <div className="w-full bg-gray-200/50 rounded-full h-2.5">
-                        <motion.div
-                            className="bg-blue-600 h-2.5 rounded-full"
-                            style={{ width: `${progress}%` }}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${progress}%` }}
-                            transition={{ duration: 0.5 }}
-                        />
-                    </div>
-                    <div className="flex justify-between mt-2 text-sm">
-                        <span>{humanizeNumber(proposal.current)}</span>
-                        <span>Goal: {humanizeNumber(proposal.goal)} ETH</span>
+                    <div className="flex item-start space-x-4">
+                        <div className='flex-1'>
+                            <div className="w-full bg-gray-200/50 rounded-full h-2.5">
+                                <motion.div
+                                    className="bg-blue-600 h-2.5 rounded-full"
+                                    style={{ width: `${progress}%` }}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${progress}%` }}
+                                    transition={{ duration: 0.5 }}
+                                />
+                            </div>
+                            <div className="flex justify-between mt-2 text-sm">
+                                <span>{humanizeNumber(proposal.current)}</span>
+                                <span>Goal: {humanizeNumber(proposal.goal)} ETH</span>
+                            </div>
+                        </div>
+
+                        {/* shrink by widh as they exit */}
+                        {!isExpanded && <motion.button
+                            onClick={() => setIsPopupOpen(true)}
+                            className="aspect-square bg-blue-600 text-white p-2 rounded-md">
+                            <CiCoffeeBean className='w-6 h-6' />
+                        </motion.button>}
                     </div>
                 </motion.div>
 

@@ -97,7 +97,7 @@ export const FeedVideo: React.FC<FeedVideoProps> = ({ src, inView }) => {
             <video
                 ref={videoRef}
                 src={src}
-                className="h-full object-cover w-[56.25vh]"
+                className="h-full object-cover w-[56.25vh] mx-auto"
                 loop
                 muted={isMuted}
 
