@@ -5,6 +5,8 @@ export async function POST(request: NextRequest) {
     try {
         const { userAddress, contract, amount, txnHash } = await request.json();
 
+        console.log("cs:", userAddress, contract, amount, txnHash);
+
         // Validate input
         if (!userAddress || !contract || !amount || !txnHash) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -17,14 +19,23 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Invalid amount provided' }, { status: 400 });
         }
 
-        // Find the user by wallet address
-        const user = await db.user.findUnique({
+        // Find the user by wallet address or create a new one
+        let user = await db.user.findUnique({
             where: { walletAddress: userAddress }
         });
 
         if (!user) {
-            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+            // Create a new user if not found
+            user = await db.user.create({
+                data: {
+                    walletAddress: userAddress,
+                    // Add any other required fields for user creation
+                    // For example: name: `User ${userAddress.slice(0, 6)}`,
+                }
+            });
+            console.log("New user created:", user.id);
         }
+
 
         // Find the fundraise by contract
         const fundraise = await db.fundraise.findFirst({
@@ -38,7 +49,7 @@ export async function POST(request: NextRequest) {
         // Create new Support record
         const support = await db.support.create({
             data: {
-                amount: amount,
+                amount: numericAmount,
                 userId: user.id,
                 fundraiseId: fundraise.id,
                 tnxhash: txnHash

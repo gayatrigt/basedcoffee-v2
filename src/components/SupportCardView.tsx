@@ -43,7 +43,7 @@ const SupportCardView: React.FC<SupportCardViewProps> = ({ onClose, fundingContr
             const txnHash = status.statusData.transactionReceipts[0].transactionHash;
 
             try {
-                const response = await fetch('/api/support', {
+                const response = await fetch('/api/support-fund', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
