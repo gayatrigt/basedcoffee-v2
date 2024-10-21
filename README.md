@@ -1,29 +1,57 @@
-# Create T3 App
+# BasedCoffee
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+BasedCoffee is a decentralized, mobile-first video crowdfunding platform designed to bridge the funding gap for small-time entrepreneurs and local innovators across India. Developed as part of the Based India initiative, BasedCoffee aims to empower communities to solve their own problems by connecting local innovators with supporters who understand their challenges.
 
-## What's next? How do I make an app with this?
+## Smart Contract Address
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+The BasedCoffee smart contract is deployed at the following address:
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+`0x06E6C36f4619741cfc940BFe32bF810708ae6B80`
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Features
 
-## Learn More
+- 60-second video pitches for accessible and engaging project presentations
+- Rapid funding cycles for quick project kickoffs
+- Transparent transactions powered by smart contracts
+- Micro-investment capabilities to democratize the funding process
+- Mobile-first design for widespread accessibility
+- Factory contract pattern for scalable and flexible campaign management
+- Efficient video storage and streaming using blob storage
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### Installation
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/basedcoffee.git
+   ```
+2. Install dependencies:
+   ```
+   cd basedcoffee
+   npm install
+   ```
+3. Start the development server:
+   ```
+   npm run dev
+   ```
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## Usage
 
-## How do I deploy this?
+1. Connect your Web3 wallet to the dApp
+2. Browse available projects or create your own 60-second pitch
+3. Invest in projects you believe in, starting with micro-investments
+4. Track the progress of your investments through transparent smart contract interactions
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+
+## Future Enhancements
+
+- Implementation of a robust verification system to further enhance trust and credibility
+
+## Contributing
+
+We welcome contributions from the community! 
+
+## Contact
+
+For questions or support, please join our Discord server or reach out to us on Twitter @gayatri_gt.
+
+Together, let's empower local innovation and drive community progress!
