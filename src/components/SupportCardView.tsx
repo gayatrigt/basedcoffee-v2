@@ -8,7 +8,7 @@ import {
     TransactionStatusAction,
     TransactionStatusLabel,
 } from '@coinbase/onchainkit/transaction';
-import { baseSepolia } from 'viem/chains';
+import { base, baseSepolia } from 'viem/chains';
 import CROWDFUNDING_PROJECT_ABI from "../abi/CrowdFundingProject.json";
 import { encodeFunctionData, Hex, parseEther } from 'viem';
 import { useAccount } from 'wagmi';
@@ -91,7 +91,7 @@ const SupportCardView: React.FC<SupportCardViewProps> = ({ onClose, fundingContr
                 />
             </div>
             <Transaction
-                chainId={baseSepolia.id}
+                chainId={base.id}
                 calls={calls}
                 onStatus={handleOnStatus}
             >

@@ -8,7 +8,7 @@ import CurrencyInput from 'react-currency-input-field';
 import { CiShare1 } from "react-icons/ci";
 import { twMerge } from 'tailwind-merge';
 import { ContractFunctionParameters, parseEther } from 'viem';
-import { baseSepolia } from 'viem/chains';
+import { base, baseSepolia } from 'viem/chains';
 import { useAccount } from 'wagmi';
 import { abi } from '~/abi/abi';
 import { useFundFormStore } from '~/store/fundFormStore';
@@ -298,7 +298,7 @@ const CreatePage = () => {
                 </div>
                 <div className='w-full md:w-1/4 mt-4'>
                     {!fundContract && <Transaction
-                        chainId={baseSepolia.id}
+                        chainId={base.id}
                         contracts={getContractArgs()}
                         onStatus={handleOnStatus}
                         className="sticky bottom-2 z-10 col-span-4 col-start-1 row-start-3 w-full h-full"
