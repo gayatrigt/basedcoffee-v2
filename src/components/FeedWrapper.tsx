@@ -39,7 +39,7 @@ const FeedWrapper = () => {
     const [inViewVideos, setInViewVideos] = useState<Record<string, boolean>>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    // const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     const fetchProposals = async () => {
         try {
