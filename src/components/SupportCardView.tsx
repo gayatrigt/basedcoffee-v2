@@ -21,7 +21,7 @@ interface SupportCardViewProps {
 
 const SupportCardView: React.FC<SupportCardViewProps> = ({ onClose, fundingContractAddress }) => {
     const { address } = useAccount();
-    const [amount, setAmount] = useState('0.0001');
+    const [amount, setAmount] = useState('0.01');
 
     const contributeFunctionData = encodeFunctionData({
         abi: CROWDFUNDING_PROJECT_ABI,

@@ -18,8 +18,6 @@ const FeedPage: NextPage<{ params: { fundId: string } }> = async ({ params }) =>
         return null;
     }
 
-
-
     return (
         <main className="flex min-h-[100dvh] flex-col items-center justify-center bg-slate-900">
             <div className="h-[100dvh] w-full overflow-y-scroll snap-y snap-mandatory">
